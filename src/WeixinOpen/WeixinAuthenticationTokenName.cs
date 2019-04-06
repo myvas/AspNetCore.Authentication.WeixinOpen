@@ -13,7 +13,7 @@ namespace Myvas.AspNetCore.Authentication.WeixinOpen
         /// <summary>
         /// openid
         /// </summary>
-        public const string openid = "weixin_openid";
+        public const string openid = "openid";
 
         /// <summary>
         /// unionid
