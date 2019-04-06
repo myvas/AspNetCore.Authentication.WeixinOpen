@@ -299,7 +299,7 @@ namespace Myvas.AspNetCore.Authentication.WeixinOpen
             }
 
             var openid = tokens.Response.Value<string>("openid");
-            var unionid = tokens.Response.Value<string>("unionid");
+            //var unionid = tokens.Response.Value<string>("unionid");
             var scope = tokens.Response.Value<string>("scope");
 
             var userInfoPayload = await _api.GetUserInfo(Options.Backchannel, Options.UserInformationEndpoint, tokens.AccessToken, openid, Context.RequestAborted, WeixinOpenLanguageCodes.zh_CN);

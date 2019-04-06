@@ -54,7 +54,7 @@ namespace Myvas.AspNetCore.Authentication
             ClaimActions.MapJsonKey(WeixinOpenClaimTypes.Privilege, "privilege");
             ClaimActions.MapJsonKey(WeixinOpenClaimTypes.Scope, "scope");
 
-            ClaimActions.MapJsonKey(ClaimTypes.NameIdentifier, "unionid");
+            ClaimActions.MapJsonKey(ClaimTypes.NameIdentifier, "openid");
             ClaimActions.MapJsonKey(ClaimTypes.Name, "nickname");
             ClaimActions.MapJsonKey(ClaimTypes.Gender, "sex");
             ClaimActions.MapJsonKey(ClaimTypes.Country, "country");
