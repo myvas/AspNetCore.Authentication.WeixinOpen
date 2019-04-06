@@ -51,7 +51,8 @@ namespace Myvas.AspNetCore.Authentication
             ClaimActions.MapJsonKey(WeixinOpenClaimTypes.Province, "province");
             ClaimActions.MapJsonKey(WeixinOpenClaimTypes.Country, "country");
             ClaimActions.MapJsonKey(WeixinOpenClaimTypes.HeadImageUrl, "headimgurl");
-            ClaimActions.MapJsonKey(WeixinOpenClaimTypes.Privilege, "privilege");
+            //TODO: Map JArray to multiple "privilege" claims
+            //ClaimActions.MapJsonKey(WeixinOpenClaimTypes.Privilege, "privilege");
             ClaimActions.MapJsonKey(WeixinOpenClaimTypes.Scope, "scope");
 
             ClaimActions.MapJsonKey(ClaimTypes.NameIdentifier, "openid");
