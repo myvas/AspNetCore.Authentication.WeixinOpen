@@ -10,9 +10,6 @@
     <PackageProjectUrl>https://github.com/myvas/AspNetCore.Authentication.WeixinOpen</PackageProjectUrl>   
     <Description>An ASP.NET Core authentication middleware: WeixinOpen for https://open.weixin.qq.com (微信开放平台/微信扫码登录)
 
-
-
-
 使用说明：须微信开放平台(open.weixin.qq.com)账号，用户使用微信扫码并确认后登入网站。</Description>   
     <Authors>Myvas</Authors>   
     <RootNamespace>Myvas.AspNetCore.Authentication.WeixinOpen</RootNamespace>   
