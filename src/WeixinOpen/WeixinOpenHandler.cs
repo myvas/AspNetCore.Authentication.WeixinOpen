@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
+using Myvas.AspNetCore.Authentication.WeixinOpen.Extensions;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
