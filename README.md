@@ -104,7 +104,6 @@ services.AddAuthentication()
 
 # Dev
 * [.NET Core SDK 2.1 LTS](https://dotnet.microsoft.com/download/dotnet-core/2.1) 2.1.802
-* [微信开发者工具](https://mp.weixin.qq.com/debug/wxadoc/dev/devtools/download.html)
 
 
 # Demo Online
