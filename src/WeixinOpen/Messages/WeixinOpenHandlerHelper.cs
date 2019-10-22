@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Myvas.AspNetCore.Authentication.WeixinOpen
+namespace Myvas.AspNetCore.Authentication
 {
     public static class WeixinOpenHandlerHelper
     {

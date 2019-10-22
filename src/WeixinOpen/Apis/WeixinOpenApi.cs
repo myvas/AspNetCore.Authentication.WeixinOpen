@@ -1,18 +1,16 @@
 ﻿using Microsoft.AspNetCore.Authentication.OAuth;
-using Microsoft.Net.Http;
-using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.AspNetCore.Http;
-using System.Net.Http;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
-namespace Myvas.AspNetCore.Authentication.WeixinOpen
+namespace Myvas.AspNetCore.Authentication
 {
     public class WeixinOpenApi : IWeixinOpenApi
     {

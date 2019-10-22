@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Myvas.AspNetCore.Authentication.WeixinOpen.Extensions
 {
-    public static class WeixinAuthTokenResponseExtensions
+    internal static class WeixinOpenTokenResponseExtensions
     {
         public static string GetUnionId(this OAuthTokenResponse response)
         {

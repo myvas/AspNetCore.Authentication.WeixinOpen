@@ -1,12 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OAuth;
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
 using Myvas.AspNetCore.Authentication.WeixinOpen.Extensions;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -18,7 +16,7 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 
-namespace Myvas.AspNetCore.Authentication.WeixinOpen
+namespace Myvas.AspNetCore.Authentication
 {
     internal class WeixinOpenHandler : OAuthHandler<WeixinOpenOptions>
     {
@@ -201,26 +199,26 @@ namespace Myvas.AspNetCore.Authentication.WeixinOpen
             {
                 var authTokens = new List<AuthenticationToken>();
 
-                authTokens.Add(new AuthenticationToken { Name = WeixinAuthenticationTokenNames.access_token, Value = tokens.AccessToken });
+                authTokens.Add(new AuthenticationToken { Name = WeixinOpenTokenNames.access_token, Value = tokens.AccessToken });
                 if (!string.IsNullOrEmpty(tokens.RefreshToken))
                 {
-                    authTokens.Add(new AuthenticationToken { Name = WeixinAuthenticationTokenNames.refresh_token, Value = tokens.RefreshToken });
+                    authTokens.Add(new AuthenticationToken { Name = WeixinOpenTokenNames.refresh_token, Value = tokens.RefreshToken });
                 }
                 if (!string.IsNullOrEmpty(tokens.TokenType))
                 {
-                    authTokens.Add(new AuthenticationToken { Name = WeixinAuthenticationTokenNames.token_type, Value = tokens.TokenType });
+                    authTokens.Add(new AuthenticationToken { Name = WeixinOpenTokenNames.token_type, Value = tokens.TokenType });
                 }
                 if (!string.IsNullOrEmpty(tokens.GetOpenId()))
                 {
-                    authTokens.Add(new AuthenticationToken { Name = WeixinAuthenticationTokenNames.openid, Value = tokens.GetOpenId() });
+                    authTokens.Add(new AuthenticationToken { Name = WeixinOpenTokenNames.openid, Value = tokens.GetOpenId() });
                 }
                 if (!string.IsNullOrEmpty(tokens.GetUnionId()))
                 {
-                    authTokens.Add(new AuthenticationToken { Name = WeixinAuthenticationTokenNames.unionid, Value = tokens.GetUnionId() });
+                    authTokens.Add(new AuthenticationToken { Name = WeixinOpenTokenNames.unionid, Value = tokens.GetUnionId() });
                 }
                 if (!string.IsNullOrEmpty(tokens.GetScope()))
                 {
-                    authTokens.Add(new AuthenticationToken { Name = WeixinAuthenticationTokenNames.scope, Value = tokens.GetScope() });
+                    authTokens.Add(new AuthenticationToken { Name = WeixinOpenTokenNames.scope, Value = tokens.GetScope() });
                 }
                 if (!string.IsNullOrEmpty(tokens.ExpiresIn))
                 {
@@ -232,7 +230,7 @@ namespace Myvas.AspNetCore.Authentication.WeixinOpen
                         var expiresAt = Clock.UtcNow + TimeSpan.FromSeconds(value);
                         authTokens.Add(new AuthenticationToken
                         {
-                            Name = WeixinAuthenticationTokenNames.expires_at,
+                            Name = WeixinOpenTokenNames.expires_at,
                             Value = expiresAt.ToString("o", CultureInfo.InvariantCulture)
                         });
                     }

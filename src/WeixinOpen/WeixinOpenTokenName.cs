@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Myvas.AspNetCore.Authentication.WeixinOpen
+namespace Myvas.AspNetCore.Authentication
 {
     //
     // Summary:
     //     Defines constants for the well-known claim types that can be assigned to a subject.
     //     This class cannot be inherited.
-    public static class WeixinAuthenticationTokenNames
+    public static class WeixinOpenTokenNames
     {
         /// <summary>
         /// openid
