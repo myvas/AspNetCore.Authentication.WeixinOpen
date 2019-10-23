@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 
 namespace Myvas.AspNetCore.Authentication
 {
-    internal class WeixinOpenHandler : OAuthHandler<WeixinOpenOptions>
+    public class WeixinOpenHandler : OAuthHandler<WeixinOpenOptions>
     {
         private readonly IWeixinOpenApi _api;
 
@@ -33,19 +33,12 @@ namespace Myvas.AspNetCore.Authentication
             _api = api ?? throw new ArgumentNullException(nameof(api));
         }
 
-        protected const string CorrelationPrefix = ".AspNetCore.Correlation.";
+        //protected const string CorrelationPrefix = ".AspNetCore.Correlation."; 
+        protected const string CorrelationMarker = "N";
         protected const string CorrelationProperty = ".xsrf";
-        //protected const string CorrelationMarker = "N";
-        protected const string AuthSchemeKey = ".AuthScheme";
+        //protected const string AuthSchemeKey = ".AuthScheme";
 
-        protected static readonly RandomNumberGenerator CryptoRandom = RandomNumberGenerator.Create();
-
-        protected virtual List<string> SplitScope(string scope)
-        {
-            var result = new List<string>();
-            if (string.IsNullOrWhiteSpace(scope)) return result;
-            return scope.Split(',').ToList();
-        }
+        //protected static readonly RandomNumberGenerator CryptoRandom = RandomNumberGenerator.Create();
 
         /// <summary>
         /// 生成网页授权调用URL，用于获取code。（然后可以用此code换取网页授权access_token）
@@ -55,7 +48,7 @@ namespace Myvas.AspNetCore.Authentication
         /// <returns></returns>
         protected override string BuildChallengeUrl(AuthenticationProperties properties, string redirectUri)
         {
-            //注意：参数只有五个，顺序不能改变！微信对该链接做了正则强匹配校验，如果链接的参数顺序不对，授权页面将无法正常访问!!!
+            // 注意：参数只有五个，顺序不能改变！微信对该链接做了正则强匹配校验，如果链接的参数顺序不对，授权页面将无法正常访问!!!
             var queryStrings = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             queryStrings.Add("appid", Options.AppId);
             queryStrings.Add("redirect_uri", redirectUri);
@@ -64,31 +57,43 @@ namespace Myvas.AspNetCore.Authentication
             var scope = PickAuthenticationProperty(properties, OAuthChallengeProperties.ScopeKey, FormatScope, Options.Scope);
             queryStrings.Add(OAuthChallengeProperties.ScopeKey, scope);
 
-            //未找到官方说明，但实验证明properties添加returnUrl和scheme后，state为1264字符，此时报错：state参数过长。所以properties只能存放在Cookie中，state作为Cookie值的索引键。
-            //var state = Options.StateDataFormat.Protect(properties);
-            //queryStrings.Add("state", state);
+            // IMPORTANT!!! 未找到官方说明，但实验证明properties添加returnUrl和scheme后，state为1264字符，此时报错：state参数过长。所以properties只能存放在Cookie中，state作为Cookie值的索引键。
+            var protectedProperties = Options.StateDataFormat.Protect(properties);
+            // queryStrings.Add("state", state);
             var correlationId = properties.Items[CorrelationProperty];
-            Context.Response.Cookies.Append(BuildStateCookieName(correlationId), Options.StateDataFormat.Protect(properties));
+            var protectedPropertiesCookieName = BuildStateCookieName(correlationId);
+            // Clean up all the deprecated cookies with pattern: "Options.CorrelationCookie.Name + Scheme.Name + "." + correlationId + "." + CorrelationMarker"
+            var deprecatedCookieNames = Context.Request.Cookies.Keys.Where(x => x.StartsWith(Options.CorrelationCookie.Name + Scheme.Name + "."));// && x.EndsWith("."+CorrelationMarker));
+            var cookieOptions = Options.CorrelationCookie.Build(Context);
+            deprecatedCookieNames.ToList().ForEach(x => Context.Response.Cookies.Delete(x));//, cookieOptions));
+            // Append a response cookie for state/properties
+            Context.Response.Cookies.Append(protectedPropertiesCookieName, protectedProperties);
             queryStrings.Add("state", correlationId);
 
             var authorizationUrl = QueryHelpers.AddQueryString(Options.AuthorizationEndpoint, queryStrings);
             return authorizationUrl + "#wechat_redirect";
         }
 
-        #region Handle big properties protected output, by store it to cookie 'xxxx.state'
-        private const string CorrelationMarker = "N";
+        #region To satisfy too big protected properties, we should store it to cookie '.{CorrelationCookieName}.{SchemeName}.{CorrelationMarker}.{CorrelationId|state}'
         protected virtual string BuildCorelationCookieName(string correlationId)
         {
             return Options.CorrelationCookie.Name + Scheme.Name + "." + correlationId;
         }
         protected virtual string BuildStateCookieName(string correlationId)
         {
-            return Options.CorrelationCookie.Name + Scheme.Name + "." + correlationId + "." + CorrelationMarker;
+            return Options.CorrelationCookie.Name + Scheme.Name + "." + CorrelationMarker + "." + correlationId;
         }
         #endregion
 
         protected override string FormatScope(IEnumerable<string> scopes)
             => string.Join(",", scopes); // // OAuth2 3.3 space separated, but weixin not
+
+        protected virtual List<string> SplitScope(string scope)
+        {
+            var result = new List<string>();
+            if (string.IsNullOrWhiteSpace(scope)) return result;
+            return scope.Split(',').ToList();
+        }
 
         #region Pick value from AuthenticationProperties
         private static string PickAuthenticationProperty<T>(
@@ -156,38 +161,31 @@ namespace Myvas.AspNetCore.Authentication
             {
                 return HandleRequestResult.Fail($"The oauth state cookie was missing: Cookie: {stateCookieName}");
             }
-
-            var cookieOptions = Options.CorrelationCookie.Build(Context, Clock.UtcNow);
-            Response.Cookies.Delete(stateCookieName, cookieOptions);
-
             var properties = Options.StateDataFormat.Unprotect(protectedProperties);
             if (properties == null)
             {
                 return HandleRequestResult.Fail($"The oauth state cookie was invalid: Cookie: {stateCookieName}");
             }
-
             // OAuth2 10.12 CSRF
             if (!ValidateCorrelationId(properties))
             {
                 return HandleRequestResult.Fail("Correlation failed.", properties);
             }
-
+            //var cookieOptions = Options.CorrelationCookie.Build(Context, Clock.UtcNow);
+            Response.Cookies.Delete(stateCookieName);//, cookieOptions);
 
             var code = query["code"];
-
             if (StringValues.IsNullOrEmpty(code))
             {
                 Logger.LogWarning("Code was not found.", properties);
                 return HandleRequestResult.Fail("Code was not found.", properties);
             }
-
             var tokens = await ExchangeCodeAsync(code, BuildRedirectUri(Options.CallbackPath));
 
             if (tokens.Error != null)
             {
                 return HandleRequestResult.Fail(tokens.Error, properties);
             }
-
             if (string.IsNullOrEmpty(tokens.AccessToken))
             {
                 return HandleRequestResult.Fail("Failed to retrieve access token.", properties);
@@ -254,18 +252,9 @@ namespace Myvas.AspNetCore.Authentication
         /// <summary>
         /// Step 2：通过code获取access_token
         /// </summary> 
-        protected override async Task<OAuthTokenResponse> ExchangeCodeAsync(string code, string redirectUri)
+        protected override Task<OAuthTokenResponse> ExchangeCodeAsync(string code, string redirectUri)
         {
-            return await _api.GetToken(Options.Backchannel, Options.TokenEndpoint, Options.AppId, Options.AppSecret, code, Context.RequestAborted);
-        }
-
-        private static async Task<string> Display(HttpResponseMessage response)
-        {
-            var output = new StringBuilder();
-            output.Append("Status: " + response.StatusCode + ";");
-            output.Append("Headers: " + response.Headers.ToString() + ";");
-            output.Append("Body: " + await response.Content.ReadAsStringAsync() + ";");
-            return output.ToString();
+            return _api.GetToken(Options.Backchannel, Options.TokenEndpoint, Options.AppId, Options.AppSecret, code, Context.RequestAborted);
         }
 
         /// <summary>
