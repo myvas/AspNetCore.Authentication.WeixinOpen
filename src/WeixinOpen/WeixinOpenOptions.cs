@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Myvas.AspNetCore.Authentication.WeixinOpen.Extensions;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Security.Claims;
 
@@ -54,7 +55,8 @@ namespace Myvas.AspNetCore.Authentication
             ClaimActions.MapJsonKey(WeixinOpenClaimTypes.Province, "province");
             ClaimActions.MapJsonKey(WeixinOpenClaimTypes.Country, "country");
             ClaimActions.MapJsonKey(WeixinOpenClaimTypes.HeadImageUrl, "headimgurl");
-            ClaimActions.MapJsonKeyArray(WeixinOpenClaimTypes.Privilege, "privilege");
+            //ClaimActions.MapJsonKeyArray(WeixinOpenClaimTypes.Privilege, "privilege");
+            ClaimActions.MapJsonKey(WeixinOpenClaimTypes.Privilege, "privilege");
             ClaimActions.MapJsonKey(WeixinOpenClaimTypes.Scope, "scope");
         }
         

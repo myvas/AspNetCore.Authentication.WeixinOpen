@@ -5,17 +5,23 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using System.Text;
 
-namespace Myvas.AspNetCore.Authentication.WeixinOpen.Extensions
+namespace Myvas.AspNetCore.Authentication
 {
-    internal class JsonKeyArrayClaimAction : ClaimAction
+    public class WeixinOpenJsonKeyArrayClaimAction : ClaimAction
     {
+        public WeixinOpenJsonKeyArrayClaimAction(string claimType, string valueType) 
+            : base(claimType, valueType)
+        {
+            JsonKey = claimType.ToLower();
+        }
+
         /// <summary>
         /// Creates a new JsonKeyArrayClaimAction.
         /// </summary>
         /// <param name="claimType">The value to use for Claim.Type when creating a Claim.</param>
         /// <param name="valueType">The value to use for Claim.ValueType when creating a Claim.</param>
         /// <param name="jsonKey">The top level key to look for in the json user data.</param>
-        public JsonKeyArrayClaimAction(string claimType, string valueType, string jsonKey) : base(claimType, valueType)
+        public WeixinOpenJsonKeyArrayClaimAction(string claimType, string valueType, string jsonKey) : base(claimType, valueType)
         {
             JsonKey = jsonKey;
         }

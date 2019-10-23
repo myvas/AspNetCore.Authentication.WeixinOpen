@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Myvas.AspNetCore.Authentication.WeixinOpen.Extensions
 {
-    internal static class WeixinOpenClaimsExtensions
+    public static class WeixinOpenClaimsExtensions
     {
         public static ClaimsIdentity AddOptionalClaim(this ClaimsIdentity identity,
             string type, string value, string issuer)
