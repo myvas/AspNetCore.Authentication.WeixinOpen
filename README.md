@@ -103,7 +103,7 @@ services.AddAuthentication()
 ```
 
 # Dev
-* [.NET Core SDK 2.1 LTS](https://dotnet.microsoft.com/download/dotnet-core/2.1) 2.1.802
+* [.NET Core SDK 2.2](https://dotnet.microsoft.com/download/dotnet-core/2.2) (2.2.402)
 
 
 # Demo Online
