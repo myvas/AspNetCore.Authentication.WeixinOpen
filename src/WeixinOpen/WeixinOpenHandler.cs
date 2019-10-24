@@ -55,7 +55,10 @@ namespace Myvas.AspNetCore.Authentication
             var scope = PickAuthenticationProperty(properties, OAuthChallengeProperties.ScopeKey, FormatScope, Options.Scope);
             queryStrings.Add(OAuthChallengeProperties.ScopeKey, scope);
 
-            // IMPORTANT!!! 未找到官方说明，但实验证明properties添加returnUrl和scheme后，state为1264字符，此时报错：state参数过长。所以properties只能存放在Cookie中，state作为Cookie值的索引键。
+            // 测试表明properties添加returnUrl和scheme后，state为1264字符，此时报错：state参数过长。
+            // 所以properties只能存放在Cookie中，state作为Cookie值的索引键。
+            // 腾讯规定state最长128字节，所以properties只能存放在Cookie中，state作为Cookie值的索引键。
+            // https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140842
             var protectedProperties = Options.StateDataFormat.Protect(properties);
             // queryStrings.Add("state", state);
             var correlationId = properties.Items[CorrelationProperty];
@@ -73,7 +76,7 @@ namespace Myvas.AspNetCore.Authentication
         }
 
         #region To satisfy too big protected properties, we should store it to cookie '.{CorrelationCookieName}.{SchemeName}.{CorrelationMarker}.{CorrelationId|state}'
-        protected virtual string BuildCorelationCookieName(string correlationId)
+        protected virtual string BuildCorrelationCookieName(string correlationId)
         {
             return Options.CorrelationCookie.Name + Scheme.Name + "." + correlationId;
         }
@@ -171,8 +174,8 @@ namespace Myvas.AspNetCore.Authentication
             }
             //var cookieOptions = Options.CorrelationCookie.Build(Context, Clock.UtcNow);
             Response.Cookies.Delete(stateCookieName);//, cookieOptions);
-            var correlationCookieName = BuildCorelationCookieName(state);
-            Response.Cookies.Delete(correlationCookieName);
+            var correlationCookieName = BuildCorrelationCookieName(state);
+            Response.Cookies.Delete(correlationCookieName);//, cookieOptions);
 
             var code = query["code"];
             if (StringValues.IsNullOrEmpty(code))
