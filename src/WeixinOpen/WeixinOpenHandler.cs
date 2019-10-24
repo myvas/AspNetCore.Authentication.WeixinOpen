@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
-using Myvas.AspNetCore.Authentication.WeixinOpen.Extensions;
+using Myvas.AspNetCore.Authentication.WeixinOpen.Internal;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace Myvas.AspNetCore.Authentication
 {
-    public class WeixinOpenHandler : OAuthHandler<WeixinOpenOptions>
+    internal class WeixinOpenHandler : OAuthHandler<WeixinOpenOptions>
     {
         private readonly IWeixinOpenApi _api;
 

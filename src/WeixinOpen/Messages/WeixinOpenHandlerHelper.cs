@@ -2,9 +2,9 @@
 using System;
 using System.Collections.Generic;
 
-namespace Myvas.AspNetCore.Authentication
+namespace Myvas.AspNetCore.Authentication.WeixinOpen.Internal
 {
-    public static class WeixinOpenHandlerHelper
+    internal static class WeixinOpenHandlerHelper
     {
         #region 错误时微信会返回含有两个字段的JSON数据包
         /// <summary>

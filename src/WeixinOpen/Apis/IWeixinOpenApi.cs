@@ -4,9 +4,9 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Myvas.AspNetCore.Authentication
+namespace Myvas.AspNetCore.Authentication.WeixinOpen.Internal
 {
-    public interface IWeixinOpenApi
+    internal interface IWeixinOpenApi
     {
         Task<bool> ValidateToken(HttpClient backchannel, string validateTokenEndpoint, string appId, string accessToken, CancellationToken cancellationToken);
         Task<JObject> GetUserInfo(HttpClient backchannel, string userInformationEndpoint, string accessToken, string openid, CancellationToken cancellationToken, WeixinOpenLanguageCodes languageCode = WeixinOpenLanguageCodes.zh_CN);

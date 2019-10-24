@@ -10,9 +10,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Myvas.AspNetCore.Authentication
+namespace Myvas.AspNetCore.Authentication.WeixinOpen.Internal
 {
-    public class WeixinOpenApi : IWeixinOpenApi
+    internal class WeixinOpenApi : IWeixinOpenApi
     {
         public ILogger Logger { get; }
 

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Myvas.AspNetCore.Authentication.WeixinOpen.Extensions
+namespace Myvas.AspNetCore.Authentication.WeixinOpen.Internal
 {
     internal static class AuthenticationPropertiesExtensions
     {

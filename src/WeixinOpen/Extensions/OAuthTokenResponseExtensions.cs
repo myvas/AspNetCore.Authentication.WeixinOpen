@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Myvas.AspNetCore.Authentication.WeixinOpen.Extensions
+namespace Myvas.AspNetCore.Authentication.WeixinOpen.Internal
 {
     internal static class OAuthTokenResponseExtensions
     {
