@@ -5,16 +5,16 @@ using System.Text;
 
 namespace Myvas.AspNetCore.Authentication.WeixinOpen.Extensions
 {
-    public static class ClaimActionCollectionExtensions
+    internal static class ClaimActionCollectionMapExtensions
     {
         public static void MapJsonKeyArray(this ClaimActionCollection collection, string claimType, string jsonKey)
         {
-            collection.Add(new WeixinOpenJsonKeyArrayClaimAction(claimType, null, jsonKey));
+            collection.Add(new JsonKeyArrayClaimAction(claimType, null, jsonKey));
         }
 
         public static void MapJsonKeyArray(this ClaimActionCollection collection, string claimType, string jsonKey, string valueType)
         {
-            collection.Add(new WeixinOpenJsonKeyArrayClaimAction(claimType, valueType, jsonKey));
+            collection.Add(new JsonKeyArrayClaimAction(claimType, valueType, jsonKey));
         }
     }
 }

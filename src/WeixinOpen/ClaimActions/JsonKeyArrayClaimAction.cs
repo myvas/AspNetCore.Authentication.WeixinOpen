@@ -7,9 +7,9 @@ using System.Text;
 
 namespace Myvas.AspNetCore.Authentication
 {
-    public class WeixinOpenJsonKeyArrayClaimAction : ClaimAction
+    internal class JsonKeyArrayClaimAction : ClaimAction
     {
-        public WeixinOpenJsonKeyArrayClaimAction(string claimType, string valueType) 
+        public JsonKeyArrayClaimAction(string claimType, string valueType) 
             : base(claimType, valueType)
         {
             JsonKey = claimType.ToLower();
@@ -21,7 +21,7 @@ namespace Myvas.AspNetCore.Authentication
         /// <param name="claimType">The value to use for Claim.Type when creating a Claim.</param>
         /// <param name="valueType">The value to use for Claim.ValueType when creating a Claim.</param>
         /// <param name="jsonKey">The top level key to look for in the json user data.</param>
-        public WeixinOpenJsonKeyArrayClaimAction(string claimType, string valueType, string jsonKey) : base(claimType, valueType)
+        public JsonKeyArrayClaimAction(string claimType, string valueType, string jsonKey) : base(claimType, valueType)
         {
             JsonKey = jsonKey;
         }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Myvas.AspNetCore.Authentication.WeixinOpen.Extensions
 {
-    public static class AuthenticationPropertiesExtensions
+    internal static class AuthenticationPropertiesExtensions
     {
         private const string CorrelationProperty = ".xsrf";
 

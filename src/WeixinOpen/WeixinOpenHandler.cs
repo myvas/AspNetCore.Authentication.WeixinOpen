@@ -9,9 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Net.Http;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
@@ -173,6 +171,8 @@ namespace Myvas.AspNetCore.Authentication
             }
             //var cookieOptions = Options.CorrelationCookie.Build(Context, Clock.UtcNow);
             Response.Cookies.Delete(stateCookieName);//, cookieOptions);
+            var correlationCookieName = BuildCorelationCookieName(state);
+            Response.Cookies.Delete(correlationCookieName);
 
             var code = query["code"];
             if (StringValues.IsNullOrEmpty(code))
@@ -252,9 +252,9 @@ namespace Myvas.AspNetCore.Authentication
         /// <summary>
         /// Step 2：通过code获取access_token
         /// </summary> 
-        protected override Task<OAuthTokenResponse> ExchangeCodeAsync(string code, string redirectUri)
+        protected override async Task<OAuthTokenResponse> ExchangeCodeAsync(string code, string redirectUri)
         {
-            return _api.GetToken(Options.Backchannel, Options.TokenEndpoint, Options.AppId, Options.AppSecret, code, Context.RequestAborted);
+            return await _api.GetToken(Options.Backchannel, Options.TokenEndpoint, Options.AppId, Options.AppSecret, code, Context.RequestAborted);
         }
 
         /// <summary>
