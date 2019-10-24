@@ -4,8 +4,8 @@
     <PackageId>Myvas.AspNetCore.Authentication.WeixinOpen</PackageId>
     <AssemblyName>Myvas.AspNetCore.Authentication.WeixinOpen</AssemblyName>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>2.1.1025.0</Version>
-    <PackageVersion>2.1.1025</PackageVersion>
+    <Version>2.2.1025.1</Version>
+    <PackageVersion>2.2.1025</PackageVersion>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageTags>Myvas,AspNetCore, Authentication, Weixin Open, Tencent</PackageTags>
     <PackageProjectUrl>https://github.com/myvas/AspNetCore.Authentication.WeixinOpen</PackageProjectUrl>   
@@ -18,7 +18,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.OAuth" Version="2.1.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OAuth" Version="2.2.0" />
   </ItemGroup>
 
 </Project>
