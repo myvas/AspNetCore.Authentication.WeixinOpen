@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using System.IO;
+﻿using System.IO;
 using System.Text;
 using System.Text.Json;
 
@@ -9,7 +8,17 @@ namespace Myvas.AspNetCore.Authentication.WeixinOpen.Internal
     {
         public static string GetString(this JsonElement element, string key)
         {
-            return element.GetString(key);
+            if (element.TryGetProperty(key, out var property) && property.ValueKind != JsonValueKind.Null)
+            {
+                return property.ToString();
+            }
+
+            return null;
+        }
+
+        public static string GetString(this JsonDocument doc, string key)
+        {
+            return doc.RootElement.GetString(key);
         }
 
         public static int GetInt32(this JsonElement element, string key, int defaultValue = 0)

@@ -4,11 +4,13 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
+using Microsoft.Net.Http.Headers;
 using Myvas.AspNetCore.Authentication.WeixinOpen.Internal;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Net.Http;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
@@ -16,8 +18,20 @@ using System.Threading.Tasks;
 
 namespace Myvas.AspNetCore.Authentication
 {
-    internal class WeixinOpenHandler : OAuthHandler<WeixinOpenOptions>
+    internal class WeixinOpenHandler : RemoteAuthenticationHandler<WeixinOpenOptions>
     {
+        protected HttpClient Backchannel => Options.Backchannel;
+
+        /// <summary>
+        /// The handler calls methods on the events which give the application control at certain points where processing is occurring. 
+        /// If it is not provided a default instance is supplied which does nothing when the methods are called.
+        /// </summary>
+        protected new OAuthEvents Events
+        {
+            get { return (OAuthEvents)base.Events; }
+            set { base.Events = value; }
+        }
+
         private readonly IWeixinOpenApi _api;
 
         public WeixinOpenHandler(
@@ -38,13 +52,42 @@ namespace Myvas.AspNetCore.Authentication
 
         //protected static readonly RandomNumberGenerator CryptoRandom = RandomNumberGenerator.Create();
 
+        protected override async Task HandleChallengeAsync(AuthenticationProperties properties)
+        {
+            if (string.IsNullOrEmpty(properties.RedirectUri))
+            {
+                properties.RedirectUri = OriginalPathBase + OriginalPath + Request.QueryString;
+            }
+
+            // OAuth2 10.12 CSRF
+            GenerateCorrelationId(properties);
+
+            var authorizationEndpoint = BuildChallengeUrl(properties, BuildRedirectUri(Options.CallbackPath));
+            var redirectContext = new RedirectContext<OAuthOptions>(
+                Context, Scheme, Options,
+                properties, authorizationEndpoint);
+            await Events.RedirectToAuthorizationEndpoint(redirectContext);
+
+            var location = Context.Response.Headers[HeaderNames.Location];
+            if (location == StringValues.Empty)
+            {
+                location = "(not set)";
+            }
+            var cookie = Context.Response.Headers[HeaderNames.SetCookie];
+            if (cookie == StringValues.Empty)
+            {
+                cookie = "(not set)";
+            }
+            Logger.HandleChallenge(location, cookie);
+        }
+
         /// <summary>
         /// 生成网页授权调用URL，用于获取code。（然后可以用此code换取网页授权access_token）
         /// </summary>
         /// <param name="properties"></param>
         /// <param name="redirectUri">跳转回调redirect_uri，应当使用https链接来确保授权code的安全性。请在传入前使用UrlEncode对链接进行处理。</param>
         /// <returns></returns>
-        protected override string BuildChallengeUrl(AuthenticationProperties properties, string redirectUri)
+        protected virtual string BuildChallengeUrl(AuthenticationProperties properties, string redirectUri)
         {
             // 注意：参数只有五个，顺序不能改变！微信对该链接做了正则强匹配校验，如果链接的参数顺序不对，授权页面将无法正常访问!!!
             var queryStrings = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -86,7 +129,7 @@ namespace Myvas.AspNetCore.Authentication
         }
         #endregion
 
-        protected override string FormatScope(IEnumerable<string> scopes)
+        protected virtual string FormatScope(IEnumerable<string> scopes)
             => string.Join(",", scopes); // // OAuth2 3.3 space separated, but weixin not
 
         protected virtual List<string> SplitScope(string scope)
@@ -258,7 +301,7 @@ namespace Myvas.AspNetCore.Authentication
         /// <summary>
         /// Step 2：通过code获取access_token
         /// </summary> 
-        protected override async Task<OAuthTokenResponse> ExchangeCodeAsync(string code, string redirectUri)
+        protected virtual async Task<OAuthTokenResponse> ExchangeCodeAsync(string code, string redirectUri)
         {
             return await _api.GetToken(Options.Backchannel, Options.TokenEndpoint, Options.AppId, Options.AppSecret, code, Context.RequestAborted);
         }
@@ -280,7 +323,7 @@ namespace Myvas.AspNetCore.Authentication
         /// <param name="properties"></param>
         /// <param name="tokens"></param>
         /// <returns></returns>
-        protected override async Task<AuthenticationTicket> CreateTicketAsync(
+        protected virtual async Task<AuthenticationTicket> CreateTicketAsync(
             ClaimsIdentity identity,
             AuthenticationProperties properties,
             OAuthTokenResponse tokens)
@@ -312,5 +355,7 @@ namespace Myvas.AspNetCore.Authentication
             await Events.CreatingTicket(context);
             return new AuthenticationTicket(context.Principal, context.Properties, Scheme.Name);
         }
+
+
     }
 }
