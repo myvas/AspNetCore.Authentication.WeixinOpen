@@ -4,7 +4,7 @@ using Microsoft.Extensions.Options;
 using Myvas.AspNetCore.Authentication;
 using System.Net.Http;
 
-namespace Microsoft.Extensions.DependencyInjection
+namespace Myvas.AspNetCore.Authentication
 {
     public class WeixinOpenPostConfigureOptions : IPostConfigureOptions<WeixinOpenOptions>
     {

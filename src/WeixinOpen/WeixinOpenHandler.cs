@@ -102,9 +102,11 @@ namespace Myvas.AspNetCore.Authentication
             // 所以properties只能存放在Cookie中，state作为Cookie值的索引键。
             // 腾讯规定state最长128字节，所以properties只能存放在Cookie中，state作为Cookie值的索引键。
             // https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140842
-            var protectedProperties = Options.StateDataFormat.Protect(properties);
-            // queryStrings.Add("state", state);
             var correlationId = properties.Items[CorrelationProperty];
+            queryStrings.Add("state", correlationId);
+
+            // Store protectedProperties in Cookie
+            var protectedProperties = Options.StateDataFormat.Protect(properties);
             var protectedPropertiesCookieName = BuildStateCookieName(correlationId);
             // Clean up all the deprecated cookies with pattern: "Options.CorrelationCookie.Name + Scheme.Name + "." + correlationId + "." + CorrelationMarker"
             var deprecatedCookieNames = Context.Request.Cookies.Keys.Where(x => x.StartsWith(Options.CorrelationCookie.Name + Scheme.Name + "."));// && x.EndsWith("."+CorrelationMarker));
@@ -112,7 +114,6 @@ namespace Myvas.AspNetCore.Authentication
             deprecatedCookieNames.ToList().ForEach(x => Context.Response.Cookies.Delete(x));//, cookieOptions));
             // Append a response cookie for state/properties
             Context.Response.Cookies.Append(protectedPropertiesCookieName, protectedProperties);
-            queryStrings.Add("state", correlationId);
 
             var authorizationUrl = QueryHelpers.AddQueryString(Options.AuthorizationEndpoint, queryStrings);
             return authorizationUrl + "#wechat_redirect";
