@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 using Myvas.AspNetCore.Authentication;
 using Myvas.AspNetCore.Authentication.WeixinOpen.Internal;
 using System;
@@ -33,8 +34,9 @@ namespace Microsoft.Extensions.DependencyInjection
             }
 
             builder.Services.TryAddTransient<IWeixinOpenApi, WeixinOpenApi>();
-
-            return builder.AddOAuth<WeixinOpenOptions, WeixinOpenHandler>(authenticationScheme, displayName, setupAction);
+            //return builder.AddOAuth<WeixinOpenOptions, WeixinOpenHandler>(authenticationScheme, displayName, setupAction);
+            builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IPostConfigureOptions<WeixinOpenOptions>, WeixinOpenPostConfigureOptions>());
+            return builder.AddRemoteScheme<WeixinOpenOptions, WeixinOpenHandler>(authenticationScheme, displayName, setupAction);
         }
     }
 }
