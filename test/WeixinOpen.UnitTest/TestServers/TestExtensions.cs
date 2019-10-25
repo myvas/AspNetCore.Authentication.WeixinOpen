@@ -52,7 +52,7 @@ namespace UnitTest
             return transaction;
         }
 
-        public static async Task DescribeAsync(this HttpResponse res, ClaimsPrincipal principal)
+        public static Task DescribeAsync(this HttpResponse res, ClaimsPrincipal principal)
         {
             res.StatusCode = 200;
             res.ContentType = "text/xml";
@@ -68,10 +68,10 @@ namespace UnitTest
                 }
             }
             var xmlBytes = Encoding.UTF8.GetBytes(xml.ToString());
-            await res.Body.WriteAsync(xmlBytes, 0, xmlBytes.Length);
+            return res.Body.WriteAsync(xmlBytes, 0, xmlBytes.Length);
         }
 
-        public static async Task DescribeAsync(this HttpResponse res, IEnumerable<AuthenticationToken> tokens)
+        public static Task DescribeAsync(this HttpResponse res, IEnumerable<AuthenticationToken> tokens)
         {
             res.StatusCode = 200;
             res.ContentType = "text/xml";
@@ -85,7 +85,7 @@ namespace UnitTest
                 }
             }
             var xmlBytes = Encoding.UTF8.GetBytes(xml.ToString());
-            await res.Body.WriteAsync(xmlBytes, 0, xmlBytes.Length);
+            return res.Body.WriteAsync(xmlBytes, 0, xmlBytes.Length);
         }
 
     }
