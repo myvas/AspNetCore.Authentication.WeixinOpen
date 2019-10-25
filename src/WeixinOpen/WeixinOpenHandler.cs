@@ -183,6 +183,9 @@ namespace Myvas.AspNetCore.Authentication
                 Logger.LogWarning("Code was not found.", properties);
                 return HandleRequestResult.Fail("Code was not found.", properties);
             }
+
+            //var codeExchangeContext = new OAuthCodeExchangeContext(properties, code, BuildRedirectUri(Options.CallbackPath));
+            //var tokens = await ExchangeCodeAsync(codeExchangeContext);
             var tokens = await ExchangeCodeAsync(code, BuildRedirectUri(Options.CallbackPath));
 
             if (tokens.Error != null)
@@ -260,6 +263,12 @@ namespace Myvas.AspNetCore.Authentication
             return await _api.GetToken(Options.Backchannel, Options.TokenEndpoint, Options.AppId, Options.AppSecret, code, Context.RequestAborted);
         }
 
+        //protected override async Task<OAuthTokenResponse> ExchangeCodeAsync(OAuthCodeExchangeContext context)
+        //{
+        //    var code = context.Code;
+        //    return await _api.GetToken(Options.Backchannel, Options.TokenEndpoint, Options.AppId, Options.AppSecret, code, Context.RequestAborted);
+        //}
+
         /// <summary>
         /// Call the OAuthServer and get a user's information.
         /// The context object will have the Identity, AccessToken, and UserInformationEndpoint available.
@@ -289,14 +298,15 @@ namespace Myvas.AspNetCore.Authentication
                 throw new ArgumentNullException(nameof(tokens));
             }
 
-            var openid = tokens.Response.Value<string>("openid");
-            //var unionid = tokens.Response.Value<string>("unionid");
-            var scope = tokens.Response.Value<string>("scope");
+            var openid = tokens.GetOpenId();
+            var unionid = tokens.GetUnionId();
+            var scope = tokens.GetScope();
 
             var userInfoPayload = await _api.GetUserInfo(Options.Backchannel, Options.UserInformationEndpoint, tokens.AccessToken, openid, Context.RequestAborted, WeixinOpenLanguageCodes.zh_CN);
-            userInfoPayload.Add("scope", scope);
+            
+            var renewUserInfoPayloadDoc = userInfoPayload.AppendElement("scope", scope);
 
-            var context = new OAuthCreatingTicketContext(new ClaimsPrincipal(identity), properties, Context, Scheme, Options, Backchannel, tokens, userInfoPayload);
+            var context = new OAuthCreatingTicketContext(new ClaimsPrincipal(identity), properties, Context, Scheme, Options, Backchannel, tokens, renewUserInfoPayloadDoc.RootElement);
             context.RunClaimActions();
 
             await Events.CreatingTicket(context);
