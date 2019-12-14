@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.OAuth.Claims;
-using System.Security.Claims;
 using System.Text.Json;
+using System.Security.Claims;
 
 namespace Myvas.AspNetCore.Authentication.WeixinOpen.Internal
 {
@@ -28,19 +28,20 @@ namespace Myvas.AspNetCore.Authentication.WeixinOpen.Internal
         /// </summary>
         public string JsonKey { get; }
 
+#if NETSTANDARD2_0 || NETSTANDARD2_1
         #region removed from 3.0, JObject replaced by JsonElement
-        //public override void Run(JObject userData, ClaimsIdentity identity, string issuer)
-        //{
-        //    var values = userData?[JsonKey];
-        //    if (!(values is JArray)) return;
+        public override void Run(JObject userData, ClaimsIdentity identity, string issuer)
+        {
+            var values = userData?[JsonKey];
+            if (!(values is JArray)) return;
 
-        //    foreach (var value in values)
-        //    {
-        //        identity.AddClaim(new Claim(ClaimType, value.ToString(), ValueType, issuer));
-        //    }
-        //}
+            foreach (var value in values)
+            {
+                identity.AddClaim(new Claim(ClaimType, value.ToString(), ValueType, issuer));
+            }
+        }
         #endregion
-
+#else //NETCOREAPP3_0 || NETCOREAPP3_1
         public override void Run(JsonElement userData, ClaimsIdentity identity, string issuer)
         {
             var isArray = userData.GetArrayLength() > 0;
@@ -48,7 +49,7 @@ namespace Myvas.AspNetCore.Authentication.WeixinOpen.Internal
             {
                 var arr = userData.GetStringArray(JsonKey);
                 foreach (var value in arr)
-                identity.AddClaim(new Claim(ClaimType, value.ToString(), ValueType, issuer));
+                    identity.AddClaim(new Claim(ClaimType, value.ToString(), ValueType, issuer));
             }
             else
             {
@@ -56,5 +57,6 @@ namespace Myvas.AspNetCore.Authentication.WeixinOpen.Internal
                 identity.AddClaim(new Claim(ClaimType, s, ValueType, issuer));
             }
         }
+#endif
     }
 }

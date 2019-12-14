@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <TargetFrameworks>netcoreapp3.0;netcoreapp3.1</TargetFrameworks>
     <PackageId>Myvas.AspNetCore.Authentication.WeixinOpen</PackageId>
     <AssemblyName>Myvas.AspNetCore.Authentication.WeixinOpen</AssemblyName>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
-    <Version>3.1.0.1</Version>
+    <Version>3.1.0.2</Version>
     <IsShippingPackage>true</IsShippingPackage>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageTags>Myvas,AspNetCore, Authentication, Weixin Open, Tencent</PackageTags>
@@ -18,8 +18,23 @@
     <Product>Myvas.AspNetCore.Authentication</Product>
   </PropertyGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="3.1.0" />
   </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="3.0.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OAuth" Version="2.2.0" />
+    <PackageReference Include="System.Text.Json" Version="4.7.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OAuth" Version="2.2.0" />
+    <PackageReference Include="System.Text.Json" Version="4.7.0" />
+  </ItemGroup>
+
 
 </Project>
