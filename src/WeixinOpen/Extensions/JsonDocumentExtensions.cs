@@ -30,7 +30,7 @@ namespace Myvas.AspNetCore.Authentication.WeixinOpen.Internal
         public static string[] GetStringArray(this JsonElement element, string key)
         {
             var s = element.GetString(key);
-            try { return s.Split(',', System.StringSplitOptions.RemoveEmptyEntries); } catch { return null; }
+            try { return s.Split(new char[] { ',' }, System.StringSplitOptions.RemoveEmptyEntries); } catch { return null; }
         }
 
         public static JsonDocument AppendElement(this JsonDocument doc, string name, string value)
