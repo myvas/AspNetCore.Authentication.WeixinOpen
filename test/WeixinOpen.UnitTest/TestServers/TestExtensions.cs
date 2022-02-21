@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.TestHost;
 
@@ -20,7 +21,7 @@ namespace UnitTest
 {
     public static class TestExtensions
     {
-        public const string CookieAuthenticationScheme = "External";
+        public const string CookieAuthenticationScheme = CookieAuthenticationDefaults.AuthenticationScheme;
 
         public static async Task<TestTransaction> SendAsync(this TestServer server, string uri, params string[] cookies)
         {
@@ -51,7 +52,7 @@ namespace UnitTest
             return transaction;
         }
 
-        public static void Describe(this HttpResponse res, ClaimsPrincipal principal)
+        public static Task DescribeAsync(this HttpResponse res, ClaimsPrincipal principal)
         {
             res.StatusCode = 200;
             res.ContentType = "text/xml";
@@ -67,10 +68,10 @@ namespace UnitTest
                 }
             }
             var xmlBytes = Encoding.UTF8.GetBytes(xml.ToString());
-            res.Body.Write(xmlBytes, 0, xmlBytes.Length);
+            return res.Body.WriteAsync(xmlBytes, 0, xmlBytes.Length);
         }
 
-        public static void Describe(this HttpResponse res, IEnumerable<AuthenticationToken> tokens)
+        public static Task DescribeAsync(this HttpResponse res, IEnumerable<AuthenticationToken> tokens)
         {
             res.StatusCode = 200;
             res.ContentType = "text/xml";
@@ -84,7 +85,7 @@ namespace UnitTest
                 }
             }
             var xmlBytes = Encoding.UTF8.GetBytes(xml.ToString());
-            res.Body.Write(xmlBytes, 0, xmlBytes.Length);
+            return res.Body.WriteAsync(xmlBytes, 0, xmlBytes.Length);
         }
 
     }

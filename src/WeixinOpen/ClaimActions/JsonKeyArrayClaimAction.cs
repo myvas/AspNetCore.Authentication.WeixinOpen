@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.OAuth.Claims;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
+using System.Text.Json;
 using System.Security.Claims;
-using System.Text;
 
 namespace Myvas.AspNetCore.Authentication.WeixinOpen.Internal
 {
@@ -31,6 +28,8 @@ namespace Myvas.AspNetCore.Authentication.WeixinOpen.Internal
         /// </summary>
         public string JsonKey { get; }
 
+#if NETSTANDARD2_0 || NETSTANDARD2_1
+        #region removed from 3.0, JObject replaced by JsonElement
         public override void Run(JObject userData, ClaimsIdentity identity, string issuer)
         {
             var values = userData?[JsonKey];
@@ -41,5 +40,23 @@ namespace Myvas.AspNetCore.Authentication.WeixinOpen.Internal
                 identity.AddClaim(new Claim(ClaimType, value.ToString(), ValueType, issuer));
             }
         }
+        #endregion
+#else //NETCOREAPP3_0 || NETCOREAPP3_1
+        public override void Run(JsonElement userData, ClaimsIdentity identity, string issuer)
+        {
+            var isArray = userData.GetArrayLength() > 0;
+            if (isArray)
+            {
+                var arr = userData.GetStringArray(JsonKey);
+                foreach (var value in arr)
+                    identity.AddClaim(new Claim(ClaimType, value.ToString(), ValueType, issuer));
+            }
+            else
+            {
+                var s = userData.GetString(JsonKey);
+                identity.AddClaim(new Claim(ClaimType, s, ValueType, issuer));
+            }
+        }
+#endif
     }
 }

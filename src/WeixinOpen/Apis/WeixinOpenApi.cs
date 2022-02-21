@@ -2,11 +2,11 @@
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -64,9 +64,9 @@ namespace Myvas.AspNetCore.Authentication.WeixinOpen.Internal
             //    "scope":"SCOPE",
             //    "unionid": "o6_bmasdasdsad6_2sgVt7hMZOPfL"
             //}
-            var payload = JObject.Parse(content);
-            var errcode = payload.Value<string>("errcode");
-            var errmsg = payload.Value<string>("errmsg");
+            var payload = JsonDocument.Parse(content);
+            var errcode = payload.RootElement.GetString("errcode");
+            var errmsg = payload.RootElement.GetString("errmsg");
             if (!string.IsNullOrEmpty(errcode))
             {
                 var error = "OAuth token endpoint failure: " + await Display(response);
@@ -110,8 +110,8 @@ namespace Myvas.AspNetCore.Authentication.WeixinOpen.Internal
             //    "openid":"OPENID",
             //    "scope":"SCOPE"
             //}
-            var payload = JObject.Parse(content);
-            if (!string.IsNullOrEmpty(payload.Value<string>("errcode")))
+            var payload = JsonDocument.Parse(content);
+            if (!string.IsNullOrEmpty(payload.RootElement.GetString("errcode")))
             {
                 var error = "OAuth refresh token endpoint failure: " + await Display(response);
                 Logger.LogError(error);
@@ -145,10 +145,10 @@ namespace Myvas.AspNetCore.Authentication.WeixinOpen.Internal
             }
 
             var content = await response.Content.ReadAsStringAsync();
-            var payload = JObject.Parse(content);
+            var payload = JsonDocument.Parse(content);
             try
             {
-                var errcode = payload.Value<int>("errcode");
+                var errcode = payload.RootElement.GetInt32("errcode");
                 return (errcode == 0);
             }
             catch { }
@@ -160,7 +160,7 @@ namespace Myvas.AspNetCore.Authentication.WeixinOpen.Internal
         /// </summary>
         /// <param name="accessToken"></param>
         /// <returns></returns>
-        public async Task<JObject> GetUserInfo(HttpClient backchannel, string userInformationEndpoint, string accessToken, string openid, CancellationToken cancellationToken, WeixinOpenLanguageCodes languageCode = WeixinOpenLanguageCodes.zh_CN)
+        public async Task<JsonDocument> GetUserInfo(HttpClient backchannel, string userInformationEndpoint, string accessToken, string openid, CancellationToken cancellationToken, WeixinOpenLanguageCodes languageCode = WeixinOpenLanguageCodes.zh_CN)
         {
             var tokenRequestParameters = new Dictionary<string, string>()
             {
@@ -194,8 +194,8 @@ namespace Myvas.AspNetCore.Authentication.WeixinOpen.Internal
             //    ],
             //    "unionid": " o6_bmasdasdsad6_2sgVt7hMZOPfL"
             //}
-            var payload = JObject.Parse(content);
-            if (!string.IsNullOrEmpty(payload.Value<string>("errcode")))
+            var payload = JsonDocument.Parse(content);
+            if (!string.IsNullOrEmpty(payload.RootElement.GetString("errcode")))
             {
                 var error = "OAuth user information endpoint failure: " + await Display(response);
                 Logger.LogError(error);
