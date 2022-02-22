@@ -5,7 +5,7 @@
     <PackageId>Myvas.AspNetCore.Authentication.WeixinOpen</PackageId>
     <AssemblyName>Myvas.AspNetCore.Authentication.WeixinOpen</AssemblyName>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
-    <Version>6.0.2.20221</Version>
+    <Version>6.0.2.20222</Version>
     <IsShippingPackage>true</IsShippingPackage>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageTags>Myvas,AspNetCore, Authentication, Weixin Open, Tencent</PackageTags>

@@ -128,10 +128,47 @@ namespace Myvas.AspNetCore.Authentication
         {
             return Options.CorrelationCookie.Name + Scheme.Name + "." + CorrelationMarker + "." + correlationId;
         }
+        protected override bool ValidateCorrelationId(AuthenticationProperties properties)
+        {
+            //return base.ValidateCorrelationId(properties);
+            if (properties == null)
+            {
+                throw new ArgumentNullException(nameof(properties));
+            }
+
+            if (!properties.Items.TryGetValue(CorrelationProperty, out var correlationId))
+            {
+                Logger.LogWarning($"The CorrectionId not found in '{Options.CorrelationCookie.Name!}'");
+                return false;
+            }
+
+            properties.Items.Remove(CorrelationProperty);
+
+            var cookieName = BuildCorrelationCookieName(correlationId); //Options.CorrelationCookie.Name + correlationId;//
+
+            var correlationCookie = Request.Cookies[cookieName];
+            if (string.IsNullOrEmpty(correlationCookie))
+            {
+                Logger.LogWarning($"The CorrectionCookie not found in '{cookieName}'");
+                return false;
+            }
+
+            var cookieOptions = Options.CorrelationCookie.Build(Context, Clock.UtcNow);
+
+            Response.Cookies.Delete(cookieName, cookieOptions);
+
+            if (!string.Equals(correlationCookie, CorrelationMarker, StringComparison.Ordinal))
+            {
+                Logger.LogWarning($"Unexcepted CorrectionCookieValue: '{cookieName}'='{correlationCookie}'");
+                return false;
+            }
+
+            return true;
+        }
         #endregion
 
         protected virtual string FormatScope(IEnumerable<string> scopes)
-            => string.Join(",", scopes); // // OAuth2 3.3 space separated, but weixin not
+                => string.Join(",", scopes); // // OAuth2 3.3 space separated, but weixin not
 
         protected virtual List<string> SplitScope(string scope)
         {
@@ -347,7 +384,7 @@ namespace Myvas.AspNetCore.Authentication
             var scope = tokens.GetScope();
 
             var userInfoPayload = await _api.GetUserInfo(Options.Backchannel, Options.UserInformationEndpoint, tokens.AccessToken, openid, Context.RequestAborted, WeixinOpenLanguageCodes.zh_CN);
-            
+
             var renewUserInfoPayloadDoc = userInfoPayload.AppendElement("scope", scope);
 
             var context = new OAuthCreatingTicketContext(new ClaimsPrincipal(identity), properties, Context, Scheme, Options, Backchannel, tokens, renewUserInfoPayloadDoc.RootElement);
