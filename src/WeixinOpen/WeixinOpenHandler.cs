@@ -7,15 +7,10 @@ using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
 using Microsoft.Net.Http.Headers;
 using Myvas.AspNetCore.Authentication.WeixinOpen.Internal;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Net.Http;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
-using System.Threading.Tasks;
 
 namespace Myvas.AspNetCore.Authentication
 {
@@ -111,7 +106,8 @@ namespace Myvas.AspNetCore.Authentication
 
             var protectedProperties = Options.StateDataFormat.Protect(properties);
             // Store protectedProperties in memorycache
-            _memoryCache.Set(correlationId, protectedProperties, TimeSpan.FromSeconds(30));
+            _memoryCache.Set(correlationId, protectedProperties, TimeSpan.FromMinutes(3));
+            Logger.LogDebug($"Cache {correlationId}: {protectedProperties}");
             // Store protectedProperties in Cookie
             var protectedPropertiesCookieName = BuildStateCookieName(correlationId);
             // Clean up all the deprecated cookies with pattern: "Options.CorrelationCookie.Name + Scheme.Name + "." + correlationId + "." + CorrelationMarker"
@@ -247,14 +243,15 @@ namespace Myvas.AspNetCore.Authentication
             var protectedProperties = Request.Cookies[stateCookieName];
             if (!_memoryCache.TryGetValue(state, out string protectedPropertiesInMemory))
             {
-                return HandleRequestResult.Fail($"The protected properties not found in memory for state '{state}'");
+                //return HandleRequestResult.Fail($"The protected properties not found in memory for state '{state}'");
+                Logger.LogWarning($"The protected properties not found in cache for state '{state}'");
             }
             else
             {
                 if (protectedPropertiesInMemory != protectedProperties)
                 {
                     protectedProperties = protectedPropertiesInMemory;
-                    Logger.LogWarning($"The protected properties NOT equal in memory as in cookie");
+                    Logger.LogWarning($"The protected properties in cache and cookies NOT equal");
                 }
             }
             if (string.IsNullOrEmpty(protectedProperties))
