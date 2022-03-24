@@ -104,31 +104,39 @@ namespace Myvas.AspNetCore.Authentication
             var correlationId = properties.Items[CorrelationProperty];
             queryStrings.Add("state", correlationId);
 
+            // 5分钟后失效
+            var expiresInMinutes = 5 + 1;
+
             var protectedProperties = Options.StateDataFormat.Protect(properties);
             // Store protectedProperties in memorycache
-            _memoryCache.Set(correlationId, protectedProperties, TimeSpan.FromMinutes(3));
+            _memoryCache.Set(correlationId, protectedProperties, TimeSpan.FromMinutes(expiresInMinutes));
             Logger.LogDebug($"Cache {correlationId}: {protectedProperties}");
             // Store protectedProperties in Cookie
-            var protectedPropertiesCookieName = BuildStateCookieName(correlationId);
-            // Clean up all the deprecated cookies with pattern: "Options.CorrelationCookie.Name + Scheme.Name + "." + correlationId + "." + CorrelationMarker"
+            // Clean up old cookies with pattern: "Options.CorrelationCookie.Name + Scheme.Name + "." + correlationId + "." + CorrelationMarker"
             var deprecatedCookieNames = Context.Request.Cookies.Keys.Where(x => x.StartsWith(Options.CorrelationCookie.Name + Scheme.Name + "."));// && x.EndsWith("."+CorrelationMarker));
             var cookieOptions = Options.CorrelationCookie.Build(Context);
             deprecatedCookieNames.ToList().ForEach(x => Context.Response.Cookies.Delete(x));//, cookieOptions));
             // Append a response cookie for state/properties
-            Context.Response.Cookies.Append(protectedPropertiesCookieName, protectedProperties);
+            if (cookieOptions.Expires.HasValue && cookieOptions.Expires.Value > DateTimeOffset.UtcNow.AddMinutes(expiresInMinutes))
+            {
+                cookieOptions.Expires = DateTimeOffset.UtcNow.AddMinutes(expiresInMinutes);
+            }
+            Context.Response.Cookies.Append(FormatStateCookieName(correlationId), protectedProperties, cookieOptions);
 
             var authorizationUrl = QueryHelpers.AddQueryString(Options.AuthorizationEndpoint, queryStrings);
             return authorizationUrl + "#wechat_redirect";
         }
 
         #region To satisfy too big protected properties, we should store it to cookie '.{CorrelationCookieName}.{SchemeName}.{CorrelationMarker}.{CorrelationId|state}'
-        protected virtual string BuildCorrelationCookieName(string correlationId)
+        protected virtual string FormatCorrelationCookieName(string correlationId)
         {
-            return Options.CorrelationCookie.Name + Scheme.Name + "." + correlationId;
+            //return Options.CorrelationCookie.Name + Scheme.Name + "." + correlationId;
+            return Options.CorrelationCookie.Name + correlationId;
         }
-        protected virtual string BuildStateCookieName(string correlationId)
+        protected virtual string FormatStateCookieName(string correlationId)
         {
-            return Options.CorrelationCookie.Name + Scheme.Name + "." + CorrelationMarker + "." + correlationId;
+            //return Options.CorrelationCookie.Name + Scheme.Name + "." + CorrelationMarker + "." + correlationId;
+            return Options.CorrelationCookie.Name + CorrelationMarker + "." + correlationId;
         }
         protected override bool ValidateCorrelationId(AuthenticationProperties properties)
         {
@@ -138,30 +146,35 @@ namespace Myvas.AspNetCore.Authentication
                 throw new ArgumentNullException(nameof(properties));
             }
 
+            // Gets correlation id
             if (!properties.Items.TryGetValue(CorrelationProperty, out var correlationId))
             {
                 Logger.LogWarning($"The CorrectionId not found in '{Options.CorrelationCookie.Name!}'");
                 return false;
             }
-
             properties.Items.Remove(CorrelationProperty);
 
-            var cookieName = BuildCorrelationCookieName(correlationId);
-
-            var correlationCookie = Request.Cookies[cookieName];
-            if (string.IsNullOrEmpty(correlationCookie))
+            // Get cookie value
+            if(!_memoryCache.TryGetValue(correlationId, out string protectedPropertiesInMemory))
             {
-                Logger.LogWarning($"The CorrectionCookie not found in '{cookieName}'");
+                Logger.LogWarning($"ValidateCorrelationId: The protected Properties not found in cache '{correlationId}'");
+            }
+            else
+            {
+                Logger.LogDebug($"ValidateCorrelationId: The protected Properties found in cache '{correlationId}'");
+            }
+            var cookieName = FormatCorrelationCookieName(correlationId);
+            if(!Request.Cookies.TryGetValue(cookieName, out var correlationCookieValue)
+                || string.IsNullOrEmpty(correlationCookieValue))
+            {
+                Logger.LogWarning($"The CorrelationCookie not found in '{cookieName}'");
                 return false;
             }
-
             var cookieOptions = Options.CorrelationCookie.Build(Context, Clock.UtcNow);
-
             Response.Cookies.Delete(cookieName, cookieOptions);
-
-            if (!string.Equals(correlationCookie, CorrelationMarker, StringComparison.Ordinal))
+            if (!string.Equals(correlationCookieValue, CorrelationMarker, StringComparison.Ordinal))
             {
-                Logger.LogWarning($"Unexcepted CorrectionCookieValue: '{cookieName}'='{correlationCookie}'");
+                Logger.LogWarning($"Unexcepted CorrelationCookieValue: '{cookieName}'='{correlationCookieValue}'");
                 return false;
             }
 
@@ -239,7 +252,7 @@ namespace Myvas.AspNetCore.Authentication
                 return HandleRequestResult.Fail("The oauth state was missing.");
             }
 
-            var stateCookieName = BuildStateCookieName(state);
+            var stateCookieName = FormatStateCookieName(state);
             var protectedProperties = Request.Cookies[stateCookieName];
             if (!_memoryCache.TryGetValue(state, out string protectedPropertiesInMemory))
             {
@@ -266,11 +279,11 @@ namespace Myvas.AspNetCore.Authentication
             // OAuth2 10.12 CSRF
             if (!ValidateCorrelationId(properties))
             {
-                return HandleRequestResult.Fail("Correlation failed.", properties);
+                return HandleRequestResult.Fail("Correlation failed", properties);
             }
             //var cookieOptions = Options.CorrelationCookie.Build(Context, Clock.UtcNow);
             Response.Cookies.Delete(stateCookieName);//, cookieOptions);
-            var correlationCookieName = BuildCorrelationCookieName(state);
+            var correlationCookieName = FormatCorrelationCookieName(state);
             Response.Cookies.Delete(correlationCookieName);//, cookieOptions);
 
             var code = query["code"];
@@ -408,7 +421,5 @@ namespace Myvas.AspNetCore.Authentication
             await Events.CreatingTicket(context);
             return new AuthenticationTicket(context.Principal, context.Properties, Scheme.Name);
         }
-
-
     }
 }
