@@ -20,7 +20,6 @@ namespace Myvas.AspNetCore.Authentication
 {
     internal class WeixinOpenHandler : RemoteAuthenticationHandler<WeixinOpenOptions>
     {
-        protected readonly IMemoryCache _memoryCache;
         protected HttpClient Backchannel => Options.Backchannel;
 
         /// <summary>
@@ -38,14 +37,12 @@ namespace Myvas.AspNetCore.Authentication
         public WeixinOpenHandler(
             IWeixinOpenApi api,
             IOptionsMonitor<WeixinOpenOptions> options,
-            IMemoryCache memoryCache,
             ILoggerFactory loggerFactory,
             UrlEncoder encoder,
             ISystemClock clock)
             : base(options, loggerFactory, encoder, clock)
         {
             _api = api ?? throw new ArgumentNullException(nameof(api));
-            _memoryCache = memoryCache;
         }
 
         //protected const string CorrelationPrefix = ".AspNetCore.Correlation."; 
@@ -151,11 +148,6 @@ namespace Myvas.AspNetCore.Authentication
 
             properties.Items[CorrelationProperty] = correlationId;
 
-            // Store protectedProperties in memory cache
-            var protectedProperties = Options.StateDataFormat.Protect(properties);
-            _memoryCache.Set(correlationId, protectedProperties, Options.RemoteAuthenticationTimeout);
-            Logger.LogDebug($"Memory cached: {correlationId}: {protectedProperties}");
-
             //var cookieName = Options.CorrelationCookie.Name + correlationId;
             var cookieName = FormatCorrelationCookieName(correlationId);
 
@@ -177,16 +169,6 @@ namespace Myvas.AspNetCore.Authentication
                 return false;
             }
             properties.Items.Remove(CorrelationProperty);
-
-            // Gets protected properties from memory cache
-            if (!_memoryCache.TryGetValue(correlationId, out string protectedPropertiesInMemory))
-            {
-                Logger.LogWarning($"ValidateCorrelationId: The protected Properties not found in cache '{correlationId}'");
-            }
-            else
-            {
-                Logger.LogDebug($"ValidateCorrelationId: The protected Properties found in cache '{correlationId}'");
-            }
 
             var cookieName = FormatCorrelationCookieName(correlationId);
 
@@ -281,36 +263,16 @@ namespace Myvas.AspNetCore.Authentication
                 return HandleRequestResult.Fail("The oauth state was missing.");
             }
 
-            if (!_memoryCache.TryGetValue(state, out string protectedPropertiesInMemory))
-            {
-                //return HandleRequestResult.Fail($"The protected properties not found in memory for state '{state}'");
-                Logger.LogWarning($"The protected properties not found in cache for state '{state}'");
-            }
-            else
-            {
-                Logger.LogDebug($"The protected properties found in cache for state '{state}' with value '{protectedPropertiesInMemory}'");
-
-            }
-
             var stateCookieName = FormatStateCookieName(state);
             var protectedProperties = Request.Cookies[stateCookieName];
             if (string.IsNullOrEmpty(protectedProperties))
             {
                 Logger.LogWarning($"The protected properties not found in cookie '{stateCookieName}'");
+                return HandleRequestResult.Fail($"The oauth state cookie was missing: Cookie: {stateCookieName}");
             }
             else
             {
-                Logger.LogWarning($"The protected properties found in cookie '{stateCookieName}' with value '{protectedProperties}'");
-                if (protectedPropertiesInMemory!=null 
-                    && protectedProperties != protectedPropertiesInMemory)
-                {
-                    protectedProperties = protectedPropertiesInMemory;
-                    Logger.LogWarning($"The protected properties in cache and cookies NOT equal");
-                }
-            }
-            if (string.IsNullOrWhiteSpace(protectedProperties))
-            {
-                return HandleRequestResult.Fail($"The oauth state cookie was missing: Cookie: {stateCookieName}");
+                Logger.LogDebug($"The protected properties found in cookie '{stateCookieName}' with value '{protectedProperties}'");
             }
 
             var properties = Options.StateDataFormat.Unprotect(protectedProperties);

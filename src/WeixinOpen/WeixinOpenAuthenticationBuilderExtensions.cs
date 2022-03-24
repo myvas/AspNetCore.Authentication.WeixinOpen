@@ -33,10 +33,9 @@ namespace Microsoft.Extensions.DependencyInjection
                 throw new ArgumentNullException(nameof(builder));
             }
 
-            builder.Services.AddMemoryCache();
             builder.Services.TryAddTransient<IWeixinOpenApi, WeixinOpenApi>();
-            //return builder.AddOAuth<WeixinOpenOptions, WeixinOpenHandler>(authenticationScheme, displayName, setupAction);
             builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IPostConfigureOptions<WeixinOpenOptions>, WeixinOpenPostConfigureOptions>());
+            //return builder.AddOAuth<WeixinOpenOptions, WeixinOpenHandler>(authenticationScheme, displayName, setupAction);
             return builder.AddRemoteScheme<WeixinOpenOptions, WeixinOpenHandler>(authenticationScheme, displayName, setupAction);
         }
     }
