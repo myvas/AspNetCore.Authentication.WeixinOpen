@@ -158,6 +158,7 @@ namespace Myvas.AspNetCore.Authentication
         protected override bool ValidateCorrelationId(AuthenticationProperties properties)
         {
             //return base.ValidateCorrelationId(properties);
+
             if (properties == null)
             {
                 throw new ArgumentNullException(nameof(properties));
@@ -170,6 +171,7 @@ namespace Myvas.AspNetCore.Authentication
             }
             properties.Items.Remove(CorrelationProperty);
 
+            //var cookieName = Options.CorrelationCookie.Name + correlationId;
             var cookieName = FormatCorrelationCookieName(correlationId);
 
             var correlationCookie = Request.Cookies[cookieName];
@@ -225,7 +227,7 @@ namespace Myvas.AspNetCore.Authentication
         #endregion
 
         protected virtual string FormatScope(IEnumerable<string> scopes)
-                => string.Join(",", scopes); // // OAuth2 3.3 space separated, but weixin not
+                => string.Join(",", scopes); // OAuth2 3.3 space separated, but weixin not
 
         protected virtual List<string> SplitScope(string scope)
         {
@@ -267,7 +269,7 @@ namespace Myvas.AspNetCore.Authentication
             var protectedProperties = Request.Cookies[stateCookieName];
             if (string.IsNullOrEmpty(protectedProperties))
             {
-                Logger.LogWarning($"The protected properties not found in cookie '{stateCookieName}'");
+                Logger.LogError($"The protected properties not found in cookie '{stateCookieName}'");
                 return HandleRequestResult.Fail($"The oauth state cookie was missing: Cookie: {stateCookieName}");
             }
             else

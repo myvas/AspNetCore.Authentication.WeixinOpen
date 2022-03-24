@@ -8,7 +8,7 @@
 		<AssemblyName>Myvas.AspNetCore.Authentication.WeixinOpen</AssemblyName>
 		<IsShippingPackage>true</IsShippingPackage>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<PackageTags>Myvas,AspNetCore, Authentication, Weixin Open, Tencent</PackageTags>
+		<PackageTags>Myvas, AspNetCore, Authentication, WeixinOpen, Tencent</PackageTags>
 		<PackageProjectUrl>https://github.com/myvas/AspNetCore.Authentication.WeixinOpen</PackageProjectUrl>
 		<Description>
 			An ASP.NET Core authentication middleware: WeixinOpen for https://open.weixin.qq.com (微信开放平台/微信扫码登录)
@@ -30,8 +30,7 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="3.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="3.1.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
 	</ItemGroup>
-
 </Project>
