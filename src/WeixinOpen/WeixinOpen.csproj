@@ -1,39 +1,37 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>netcoreapp6.0;net5.0;netcoreapp3.1</TargetFrameworks>
-    <PackageId>Myvas.AspNetCore.Authentication.WeixinOpen</PackageId>
-    <AssemblyName>Myvas.AspNetCore.Authentication.WeixinOpen</AssemblyName>
-    <NoWarn>$(NoWarn);CS1591</NoWarn>
-    <Version>6.0.2.20222</Version>
-    <IsShippingPackage>true</IsShippingPackage>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageTags>Myvas,AspNetCore, Authentication, Weixin Open, Tencent</PackageTags>
-    <PackageProjectUrl>https://github.com/myvas/AspNetCore.Authentication.WeixinOpen</PackageProjectUrl>   
-    <Description>An ASP.NET Core authentication middleware: WeixinOpen for https://open.weixin.qq.com (微信开放平台/微信扫码登录)
+	<PropertyGroup>
+		<TargetFrameworks>net6.0;net5.0;netcoreapp3.1</TargetFrameworks>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<!--<Nullable>enable</Nullable>-->
+		<PackageId>Myvas.AspNetCore.Authentication.WeixinOpen</PackageId>
+		<AssemblyName>Myvas.AspNetCore.Authentication.WeixinOpen</AssemblyName>
+		<IsShippingPackage>true</IsShippingPackage>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageTags>Myvas,AspNetCore, Authentication, Weixin Open, Tencent</PackageTags>
+		<PackageProjectUrl>https://github.com/myvas/AspNetCore.Authentication.WeixinOpen</PackageProjectUrl>
+		<Description>
+			An ASP.NET Core authentication middleware: WeixinOpen for https://open.weixin.qq.com (微信开放平台/微信扫码登录)
 
-使用说明：须微信开放平台(open.weixin.qq.com)账号，用户使用微信扫码并确认后登入网站。</Description>   
-    <Authors>Myvas</Authors>   
-    <RootNamespace>Myvas.AspNetCore.Authentication.WeixinOpen</RootNamespace>   
-    <Product>Myvas.AspNetCore.Authentication</Product>
-  </PropertyGroup>
+			使用说明：须微信开放平台(open.weixin.qq.com)账号，用户使用微信扫码并确认后登入网站。
+		</Description>
+		<RootNamespace>Myvas.AspNetCore.Authentication.WeixinOpen</RootNamespace>
+		<Product>Myvas.AspNetCore.Authentication</Product>
+	</PropertyGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp6.0'">
+	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="6.0.0" />
+		<PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
 	</ItemGroup>
-	
-  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="3.1.3" />
-  </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="5.0.0" />
-  </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="5.0.0" />
+		<PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+	</ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.OAuth" Version="2.2.0" />
-    <PackageReference Include="System.Text.Json" Version="4.7.0" />
-  </ItemGroup>
-
+	<ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="3.0.0" />
+		<PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+	</ItemGroup>
 
 </Project>

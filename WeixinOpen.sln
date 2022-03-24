@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29418.71
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32228.430
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{672FEA18-F072-4549-9C4C-DBD1F9CDC7BB}"
 EndProject
@@ -10,7 +10,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_", "_", "{E9754587-13F5-4E
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
 		Changelog.md = Changelog.md
+		delete_all_bin_and_obj.cmd = delete_all_bin_and_obj.cmd
+		Directory.Build.props = Directory.Build.props
+		Directory.Build.targets = Directory.Build.targets
 		global.json = global.json
+		LICENSE.md = LICENSE.md
 		NuGet.Config = NuGet.Config
 		README.md = README.md
 	EndProjectSection
@@ -20,6 +24,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeixinOpen", "src\WeixinOpen\WeixinOpen.csproj", "{C68C8D63-7FBA-4BE2-B929-C2B00A59C5A6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeixinOpen.UnitTest", "test\WeixinOpen.UnitTest\WeixinOpen.UnitTest.csproj", "{C64FC9AD-14BF-46CA-9437-9AA48B625952}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeixinOpen.UnitTest_5_0", "test\WeixinOpen.UnitTest_5_0\WeixinOpen.UnitTest_5_0.csproj", "{B1004DA9-5947-46DE-AE30-2A48F49538D9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeixinOpen.UnitTest_3_1", "test\WeixinOpen.UnitTest_3_1\WeixinOpen.UnitTest_3_1.csproj", "{199BC659-BFC7-4B77-B053-5FD2EE4D53DE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,6 +43,14 @@ Global
 		{C64FC9AD-14BF-46CA-9437-9AA48B625952}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C64FC9AD-14BF-46CA-9437-9AA48B625952}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C64FC9AD-14BF-46CA-9437-9AA48B625952}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1004DA9-5947-46DE-AE30-2A48F49538D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1004DA9-5947-46DE-AE30-2A48F49538D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1004DA9-5947-46DE-AE30-2A48F49538D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1004DA9-5947-46DE-AE30-2A48F49538D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{199BC659-BFC7-4B77-B053-5FD2EE4D53DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{199BC659-BFC7-4B77-B053-5FD2EE4D53DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{199BC659-BFC7-4B77-B053-5FD2EE4D53DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{199BC659-BFC7-4B77-B053-5FD2EE4D53DE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -42,6 +58,8 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{C68C8D63-7FBA-4BE2-B929-C2B00A59C5A6} = {672FEA18-F072-4549-9C4C-DBD1F9CDC7BB}
 		{C64FC9AD-14BF-46CA-9437-9AA48B625952} = {73FCFCF4-3A1C-4D4D-939A-9CABDC2341DC}
+		{B1004DA9-5947-46DE-AE30-2A48F49538D9} = {73FCFCF4-3A1C-4D4D-939A-9CABDC2341DC}
+		{199BC659-BFC7-4B77-B053-5FD2EE4D53DE} = {73FCFCF4-3A1C-4D4D-939A-9CABDC2341DC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2AEDFD1F-BBE1-4727-9978-2FB04DCE84AF}

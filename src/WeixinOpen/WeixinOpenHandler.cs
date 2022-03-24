@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
@@ -20,6 +21,7 @@ namespace Myvas.AspNetCore.Authentication
 {
     internal class WeixinOpenHandler : RemoteAuthenticationHandler<WeixinOpenOptions>
     {
+        protected readonly IMemoryCache _memoryCache;
         protected HttpClient Backchannel => Options.Backchannel;
 
         /// <summary>
@@ -37,12 +39,14 @@ namespace Myvas.AspNetCore.Authentication
         public WeixinOpenHandler(
             IWeixinOpenApi api,
             IOptionsMonitor<WeixinOpenOptions> options,
+            IMemoryCache memoryCache,
             ILoggerFactory loggerFactory,
             UrlEncoder encoder,
             ISystemClock clock)
             : base(options, loggerFactory, encoder, clock)
         {
             _api = api ?? throw new ArgumentNullException(nameof(api));
+            _memoryCache = memoryCache;
         }
 
         //protected const string CorrelationPrefix = ".AspNetCore.Correlation."; 
@@ -105,8 +109,10 @@ namespace Myvas.AspNetCore.Authentication
             var correlationId = properties.Items[CorrelationProperty];
             queryStrings.Add("state", correlationId);
 
-            // Store protectedProperties in Cookie
             var protectedProperties = Options.StateDataFormat.Protect(properties);
+            // Store protectedProperties in memorycache
+            _memoryCache.Set(correlationId, protectedProperties, TimeSpan.FromSeconds(30));
+            // Store protectedProperties in Cookie
             var protectedPropertiesCookieName = BuildStateCookieName(correlationId);
             // Clean up all the deprecated cookies with pattern: "Options.CorrelationCookie.Name + Scheme.Name + "." + correlationId + "." + CorrelationMarker"
             var deprecatedCookieNames = Context.Request.Cookies.Keys.Where(x => x.StartsWith(Options.CorrelationCookie.Name + Scheme.Name + "."));// && x.EndsWith("."+CorrelationMarker));
@@ -144,7 +150,7 @@ namespace Myvas.AspNetCore.Authentication
 
             properties.Items.Remove(CorrelationProperty);
 
-            var cookieName = BuildCorrelationCookieName(correlationId); //Options.CorrelationCookie.Name + correlationId;//
+            var cookieName = BuildCorrelationCookieName(correlationId);
 
             var correlationCookie = Request.Cookies[cookieName];
             if (string.IsNullOrEmpty(correlationCookie))
@@ -239,6 +245,18 @@ namespace Myvas.AspNetCore.Authentication
 
             var stateCookieName = BuildStateCookieName(state);
             var protectedProperties = Request.Cookies[stateCookieName];
+            if (!_memoryCache.TryGetValue(state, out string protectedPropertiesInMemory))
+            {
+                return HandleRequestResult.Fail($"The protected properties not found in memory for state '{state}'");
+            }
+            else
+            {
+                if (protectedPropertiesInMemory != protectedProperties)
+                {
+                    protectedProperties = protectedPropertiesInMemory;
+                    Logger.LogWarning($"The protected properties NOT equal in memory as in cookie");
+                }
+            }
             if (string.IsNullOrEmpty(protectedProperties))
             {
                 return HandleRequestResult.Fail($"The oauth state cookie was missing: Cookie: {stateCookieName}");

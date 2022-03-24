@@ -33,6 +33,9 @@ An ASP.NET Core authentication middleware: WeixinAuth for https://mp.weixin.qq.c
 1.QQConnect: 腾讯QQ互联平台(https://connect.qq.com)
 创建应用（网站应用，移动应用），并指定网站回调地址（例如：https://www.myvas.com/signin-qqconnect )，记下AppId和AppKey。
 
+```
+using Myvas.AspNetCore.Authentication;
+```
 
 ```csharp
 services.AddAuthentication()
@@ -54,6 +57,9 @@ services.AddAuthentication()
 2.WeixinOpen: 微信开放平台(https://open.weixin.qq.com)
 创建网站应用，配置授权回调域（例如：auth.myvas.com )，记下AppId，获取AppSecret。
 
+```
+using Myvas.AspNetCore.Authentication;
+```
 
 ```csharp
 services.AddAuthentication()
@@ -62,7 +68,7 @@ services.AddAuthentication()
         options.AppId = Configuration["WeixinOpen:AppId"];
         options.AppSecret = Configuration["WeixinOpen:AppSecret"];
 
-        options.CallbackPath = "signin-weixinopen"; //默认
+        options.CallbackPath = "/signin-weixinopen"; //默认
     };
 ```
 
@@ -80,6 +86,9 @@ services.AddAuthentication()
 - 将文件MP_verify_xxxxxxxxx.txt上传至wwwroot目录下。
 
 
+```
+using Myvas.AspNetCore.Authentication;
+```
 ```csharp
 services.AddAuthentication()
     .AddWeixinAuth(options => 
@@ -103,7 +112,7 @@ services.AddAuthentication()
 ```
 
 # Dev
-* [.NET Core SDK 6.0](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
+* [.NET Core 6.0](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
 
 
 # Demo Online

@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authentication.OAuth.Claims;
 using System.Text.Json;
 using System.Security.Claims;
+using Newtonsoft.Json.Linq;
 
 namespace Myvas.AspNetCore.Authentication.WeixinOpen.Internal
 {
     internal class JsonKeyArrayClaimAction : ClaimAction
     {
-        public JsonKeyArrayClaimAction(string claimType, string valueType) 
+        public JsonKeyArrayClaimAction(string claimType, string valueType)
             : base(claimType, valueType)
         {
             JsonKey = claimType.ToLower();
@@ -28,20 +29,40 @@ namespace Myvas.AspNetCore.Authentication.WeixinOpen.Internal
         /// </summary>
         public string JsonKey { get; }
 
-#if NETSTANDARD2_0 || NETSTANDARD2_1
-        #region removed from 3.0, JObject replaced by JsonElement
-        public override void Run(JObject userData, ClaimsIdentity identity, string issuer)
-        {
-            var values = userData?[JsonKey];
-            if (!(values is JArray)) return;
 
-            foreach (var value in values)
+#if NET6_0
+        public override void Run(JsonElement userData, ClaimsIdentity identity, string issuer)
+        {
+            var isArray = userData.GetArrayLength() > 0;
+            if (isArray)
             {
-                identity.AddClaim(new Claim(ClaimType, value.ToString(), ValueType, issuer));
+                var arr = userData.GetStringArray(JsonKey);
+                foreach (var value in arr)
+                    identity.AddClaim(new Claim(ClaimType, value.ToString(), ValueType, issuer));
+            }
+            else
+            {
+                var s = userData.GetString(JsonKey);
+                identity.AddClaim(new Claim(ClaimType, s, ValueType, issuer));
             }
         }
-        #endregion
-#else //NETCOREAPP3_0 || NETCOREAPP3_1
+#elif NET5_0
+        public override void Run(JsonElement userData, ClaimsIdentity identity, string issuer)
+        {
+            var isArray = userData.GetArrayLength() > 0;
+            if (isArray)
+            {
+                var arr = userData.GetStringArray(JsonKey);
+                foreach (var value in arr)
+                    identity.AddClaim(new Claim(ClaimType, value.ToString(), ValueType, issuer));
+            }
+            else
+            {
+                var s = userData.GetString(JsonKey);
+                identity.AddClaim(new Claim(ClaimType, s, ValueType, issuer));
+            }
+        }
+#elif NETCOREAPP3_1
         public override void Run(JsonElement userData, ClaimsIdentity identity, string issuer)
         {
             var isArray = userData.GetArrayLength() > 0;
