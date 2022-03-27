@@ -5,7 +5,7 @@
 
 # What's this?
 An ASP.NET Core authentication middleware for https://open.weixin.qq.com (微信开放平台/微信扫码登录)
-* 须微信开放平台(open.weixin.qq.com)账号
+* 须微信开放平台(open.weixin.qq.com)账号。
 * 用户可使用微信扫码并确认后登入网站。
 
 
