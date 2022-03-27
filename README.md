@@ -1,18 +1,20 @@
 # Myvas.AspNetCore.Authentication Family
 * QQConnect: [Here](https://github.com/myvas/AspNetCore.Authentication.QQConnect)
-* WeixinOpen: this repo
+* WeixinOpen: _this repo_
 * WeixinAuth: [Here](https://github.com/myvas/AspNetCore.Authentication.WeixinAuth)
 
 # What's this?
 An ASP.NET Core authentication middleware for https://open.weixin.qq.com (微信开放平台/微信扫码登录)
+* 须微信开放平台(open.weixin.qq.com)账号
+* 用户可使用微信扫码并确认后登入网站。
 
-微信开放平台/微信扫码登录：须微信开放平台(open.weixin.qq.com)账号，用户使用微信扫码并确认后登入网站。
-
-* nuget: [Myvas.AspNetCore.Authentication.WeixinOpen](https://www.nuget.org/packages/Myvas.AspNetCore.Authentication.WeixinOpen)
 
 # How to Use?
-## 1.Create account
+## 0.Create account
 在微信开放平台(https://open.weixin.qq.com)上创建网站应用，配置授权回调域（例如：auth.myvas.com )，记下AppId，获取AppSecret。
+
+## 1.nuget
+[Myvas.AspNetCore.Authentication.WeixinOpen](https://www.nuget.org/packages/Myvas.AspNetCore.Authentication.WeixinOpen)
 
 ## 2.Configure
 ```csharp
