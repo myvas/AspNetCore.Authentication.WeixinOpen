@@ -17,7 +17,11 @@
 		</Description>
 		<RootNamespace>Myvas.AspNetCore.Authentication.WeixinOpen</RootNamespace>
 		<Product>Myvas.AspNetCore.Authentication</Product>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
 	</PropertyGroup>
+	<ItemGroup>
+		<None Include="..\..\README.md" Pack="true" PackagePath="\" />
+	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="7.0.0" />
@@ -36,6 +40,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 	</ItemGroup>
 </Project>
