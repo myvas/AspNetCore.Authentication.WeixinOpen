@@ -1,4 +1,9 @@
 # Changelog
+
+## 7.0.11
+- Add target framework: net7.0
+- GitHub actions: dotnet tests
+
 ## 6.0.3
 - Update to net6.0
 
