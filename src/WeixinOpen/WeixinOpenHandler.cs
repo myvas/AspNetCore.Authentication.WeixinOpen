@@ -34,6 +34,12 @@ namespace Myvas.AspNetCore.Authentication
 
         private readonly IWeixinOpenApi _api;
 
+#if NET8_0_OR_GREATER
+        /// <summary>
+        /// Initializes a new instance of <see cref="WeixinOpenHandler"/>.
+        /// </summary>
+        /// <inheritdoc />
+        [Obsolete("ISystemClock is obsolete, use TimeProvider on AuthenticationSchemeOptions instead.")]
         public WeixinOpenHandler(
             IWeixinOpenApi api,
             IOptionsMonitor<WeixinOpenOptions> options,
@@ -45,7 +51,37 @@ namespace Myvas.AspNetCore.Authentication
             _api = api ?? throw new ArgumentNullException(nameof(api));
         }
 
-        //protected const string CorrelationPrefix = ".AspNetCore.Correlation."; 
+        /// <summary>
+        /// Initializes a new instance of <see cref="WeixinOpenHandler"/>.
+        /// </summary>
+        /// <inheritdoc />
+        public WeixinOpenHandler(
+            IWeixinOpenApi api,
+            IOptionsMonitor<WeixinOpenOptions> options,
+            ILoggerFactory loggerFactory,
+            UrlEncoder encoder)
+            : base(options, loggerFactory, encoder)
+        {
+            _api = api ?? throw new ArgumentNullException(nameof(api));
+        }
+#else
+        /// <summary>
+        /// Initializes a new instance of <see cref="WeixinOpenHandler"/>.
+        /// </summary>
+        /// <inheritdoc />
+        public WeixinOpenHandler(
+            IWeixinOpenApi api,
+            IOptionsMonitor<WeixinOpenOptions> options,
+            ILoggerFactory loggerFactory,
+            UrlEncoder encoder,
+            ISystemClock clock)
+            : base(options, loggerFactory, encoder, clock)
+        {
+            _api = api ?? throw new ArgumentNullException(nameof(api));
+        }
+#endif
+
+        //protected const string CorrelationPrefix = ".AspNetCore.Correlation.";
         protected const string CorrelationMarker = "N";
         protected const string CorrelationProperty = ".xsrf";
         //protected const string AuthSchemeKey = ".AuthScheme";
@@ -109,8 +145,12 @@ namespace Myvas.AspNetCore.Authentication
             // Clean up old cookies with pattern: "Options.CorrelationCookie.Name + Scheme.Name + "." + correlationId + "." + CorrelationMarker"
             var deprecatedCookieNames = Context.Request.Cookies.Keys.Where(x => x.StartsWith(Options.CorrelationCookie.Name + Scheme.Name + "."));// && x.EndsWith("."+CorrelationMarker));
             deprecatedCookieNames.ToList().ForEach(x => Context.Response.Cookies.Delete(x));//, cookieOptions));
-            // Append a response cookie for state/properties
+                                                                                            // Append a response cookie for state/properties
+#if NET8_0_OR_GREATER
+            var cookieOptions = Options.CorrelationCookie.Build(Context, TimeProvider.GetUtcNow());
+#else
             var cookieOptions = Options.CorrelationCookie.Build(Context, Clock.UtcNow);
+#endif
             Context.Response.Cookies.Append(FormatStateCookieName(correlationId), protectedProperties, cookieOptions);
 
             var authorizationUrl = QueryHelpers.AddQueryString(Options.AuthorizationEndpoint, queryStrings);
@@ -143,8 +183,11 @@ namespace Myvas.AspNetCore.Authentication
             var bytes = new byte[32];
             RandomNumberGenerator.Fill(bytes);
             var correlationId = Base64UrlTextEncoder.Encode(bytes);
-
+#if NET8_0_OR_GREATER
+            var cookieOptions = Options.CorrelationCookie.Build(Context, TimeProvider.GetUtcNow());
+#else
             var cookieOptions = Options.CorrelationCookie.Build(Context, Clock.UtcNow);
+#endif
 
             properties.Items[CorrelationProperty] = correlationId;
 
@@ -181,8 +224,11 @@ namespace Myvas.AspNetCore.Authentication
                 return false;
             }
 
+#if NET8_0_OR_GREATER
+            var cookieOptions = Options.CorrelationCookie.Build(Context, TimeProvider.GetUtcNow());
+#else
             var cookieOptions = Options.CorrelationCookie.Build(Context, Clock.UtcNow);
-
+#endif
             Response.Cookies.Delete(cookieName, cookieOptions);
 
             if (!string.Equals(correlationCookie, CorrelationMarker, StringComparison.Ordinal))
@@ -193,7 +239,7 @@ namespace Myvas.AspNetCore.Authentication
 
             return true;
         }
-        #endregion
+#endregion
 
         #region Pick value from AuthenticationProperties
         private static string PickAuthenticationProperty<T>(
@@ -352,7 +398,11 @@ namespace Myvas.AspNetCore.Authentication
                     {
                         // https://www.w3.org/TR/xmlschema-2/#dateTime
                         // https://msdn.microsoft.com/en-us/library/az4se3k1(v=vs.110).aspx
+#if NET8_0_OR_GREATER
+                        var expiresAt = TimeProvider.GetUtcNow() + TimeSpan.FromSeconds(value);
+#else
                         var expiresAt = Clock.UtcNow + TimeSpan.FromSeconds(value);
+#endif
                         authTokens.Add(new AuthenticationToken
                         {
                             Name = WeixinOpenTokenNames.expires_at,

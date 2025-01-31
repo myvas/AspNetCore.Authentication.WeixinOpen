@@ -12,8 +12,9 @@ namespace UnitTest
 {
     public class TestAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>, IAuthenticationSignInHandler
     {
-        public TestAuthHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock) : base(options, logger, encoder, clock)
-        { }
+        public TestAuthHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder) : base(options, logger, encoder)
+        {
+        }
 
         public int SignInCount { get; set; }
         public int SignOutCount { get; set; }
