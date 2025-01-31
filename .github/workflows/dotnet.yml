@@ -69,5 +69,4 @@ jobs:
       with:
         name: dontet-results-${{ matrix.dotnet-version }}
         path: TestResults-${{ matrix.dotnet-version }}
-      if: ${{ always() }}
     - run: echo "This job's status is ${{ job.status }}."
