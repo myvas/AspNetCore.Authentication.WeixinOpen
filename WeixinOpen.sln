@@ -22,15 +22,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{73FCFCF4-3
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeixinOpen", "src\WeixinOpen\WeixinOpen.csproj", "{C68C8D63-7FBA-4BE2-B929-C2B00A59C5A6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeixinOpen.UnitTest_3_1", "test\WeixinOpen.UnitTest_3_1\WeixinOpen.UnitTest_3_1.csproj", "{199BC659-BFC7-4B77-B053-5FD2EE4D53DE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeixinOpen.UnitTest_3.1.x", "test\WeixinOpen.UnitTest_3_1\WeixinOpen.UnitTest_3.1.x.csproj", "{199BC659-BFC7-4B77-B053-5FD2EE4D53DE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeixinOpen.UnitTest_6_0", "test\WeixinOpen.UnitTest_6_0\WeixinOpen.UnitTest_6_0.csproj", "{8BAA1667-F949-4E5B-A794-DDA15DA2C0A1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeixinOpen.UnitTest_6.0.x", "test\WeixinOpen.UnitTest_6_0\WeixinOpen.UnitTest_6.0.x.csproj", "{8BAA1667-F949-4E5B-A794-DDA15DA2C0A1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeixinOpen.UnitTest_7_0", "test\WeixinOpen.UnitTest_7_0\WeixinOpen.UnitTest_7_0.csproj", "{1D18D600-3F30-4C24-8D65-3ADFCA3396CF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeixinOpen.UnitTest_7.0.x", "test\WeixinOpen.UnitTest_7_0\WeixinOpen.UnitTest_7.0.x.csproj", "{1D18D600-3F30-4C24-8D65-3ADFCA3396CF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeixinOpen.UnitTest_8_0", "test\WeixinOpen.UnitTest_8_0\WeixinOpen.UnitTest_8_0.csproj", "{855779BA-02F3-4F8E-823F-045F8418E873}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeixinOpen.UnitTest_8.0.x", "test\WeixinOpen.UnitTest_8_0\WeixinOpen.UnitTest_8.0.x.csproj", "{855779BA-02F3-4F8E-823F-045F8418E873}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeixinOpen.UnitTest_5_0", "test\WeixinOpen.UnitTest_5_0\WeixinOpen.UnitTest_5_0.csproj", "{EB89A855-18C6-4890-B5CF-0A43054875AA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeixinOpen.UnitTest_5.0.x", "test\WeixinOpen.UnitTest_5_0\WeixinOpen.UnitTest_5.0.x.csproj", "{EB89A855-18C6-4890-B5CF-0A43054875AA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
