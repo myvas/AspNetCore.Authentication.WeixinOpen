@@ -8,8 +8,9 @@
 
 * WeixinOpen: _this repo_
 
-[![WeixinOpen](https://github.com/myvas/AspNetCore.Authentication.WeixinOpen/actions/workflows/dotnet.yml/badge.svg)](https://github.com/myvas/AspNetCore.Authentication.WeixinOpen)
 [![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/myvas/AspNetCore.Authentication.WeixinOpen?label=github)](https://github.com/myvas/AspNetCore.Authentication.WeixinOpen)
+[![test](https://github.com/myvas/AspNetCore.Authentication.WeixinOpen/actions/workflows/dotnet.yml/badge.svg)](https://github.com/myvas/AspNetCore.Authentication.WeixinOpen/actions)
+[![deploy](https://github.com/myvas/AspNetCore.Authentication.WeixinOpen/actions/workflows/nuget.yml/badge.svg)](https://github.com/myvas/AspNetCore.Authentication.WeixinOpen/actions)
 [![NuGet](https://img.shields.io/nuget/v/Myvas.AspNetCore.Authentication.WeixinOpen.svg)](https://www.nuget.org/packages/Myvas.AspNetCore.Authentication.WeixinOpen)
 
 * WeixinAuth: [Here](https://github.com/myvas/AspNetCore.Authentication.WeixinAuth)
