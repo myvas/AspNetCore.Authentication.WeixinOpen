@@ -8,13 +8,16 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<MinVerVersion>7.0</MinVerVersion>
-		<MinVerIgnoreHeight>true</MinVerIgnoreHeight>
+		<MinVerVersion>8.0</MinVerVersion>
+		<MinVerTagPrefix>v</MinVerTagPrefix>
+		<MinVerDefaultPreReleaseIdentifiers>alpha</MinVerDefaultPreReleaseIdentifiers>
+		<MinVerIgnoreHeight>false</MinVerIgnoreHeight>
+		<MinVerSkip Condition="'$(Configuration)' == 'Debug'">true</MinVerSkip>
 	</PropertyGroup>
 	<Target Name="CustomFileVersion" AfterTargets="MinVer">
 		<PropertyGroup>
-			<FileVersion>$(MinVerMajor).$(MinVerMinor).$(MinVerPatch).$([System.DateTime]::Now.AddYears(-2021).ToString("yMMdd"))</FileVersion>
-		</PropertyGroup>
+			<!--<FileVersion>$(MinVerMajor).$(MinVerMinor).$(MinVerPatch).$([System.DateTime]::Now.AddYears(-2021).ToString("Mddy"))</FileVersion>
+		--></PropertyGroup>
 	</Target>
 
 	<PropertyGroup>

@@ -1,5 +1,9 @@
 # Changelog
 
+## 8.0.0
+- Added target framework: net8.0
+- Added GitHub actions: dotnet pack and publish to nuget
+
 ## 7.0.11
 - Add target framework: net7.0
 - GitHub actions: dotnet tests
