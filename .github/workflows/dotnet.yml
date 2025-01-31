@@ -62,9 +62,6 @@ jobs:
     - name: Build
       run: dotnet build --no-restore
 
-    - name: Install the ICU package
-      run: apt-get update && apt-get install -y libicu-dev
-
     - name: Test with the dotnet CLI
       run: dotnet test --no-build --verbosity normal --logger trx --results-directory "TestResults-${{ matrix.dotnet-version }}"
     - name: Upload dotnet test results
