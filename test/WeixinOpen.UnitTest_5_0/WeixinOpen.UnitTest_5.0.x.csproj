@@ -2,7 +2,6 @@
 
 	<PropertyGroup>
 		<TargetFramework>net5.0</TargetFramework>
-
 		<IsPackable>false</IsPackable>
 	</PropertyGroup>
 
@@ -20,7 +19,6 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
-		<!--<PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.3.0" />-->
 	</ItemGroup>
 
 	<ItemGroup>
