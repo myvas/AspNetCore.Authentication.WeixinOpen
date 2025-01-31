@@ -346,7 +346,7 @@ namespace Myvas.AspNetCore.Authentication
 
             if (StringValues.IsNullOrEmpty(code))
             {
-                Logger.LogWarning("Code was not found.", properties);
+                Logger.LogWarning("Code was not found.");
                 return HandleRequestResult.Fail("Code was not found.", properties);
             }
 
