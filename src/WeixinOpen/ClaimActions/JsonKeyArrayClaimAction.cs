@@ -29,7 +29,7 @@ namespace Myvas.AspNetCore.Authentication.WeixinOpen.Internal
         /// </summary>
         public string JsonKey { get; }
 
-#if NET6_0_OR_GREATER
+#if NET8_0 || NET7_0 || NET6_0
         public override void Run(JsonElement userData, ClaimsIdentity identity, string issuer)
         {
             var isArray = userData.GetArrayLength() > 0;
