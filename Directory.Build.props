@@ -8,7 +8,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<MinVerVersion>8.0</MinVerVersion>
+		<MinVerMajorMinor>8.0</MinVerMajorMinor>
 		<MinVerTagPrefix>v</MinVerTagPrefix>
 		<MinVerDefaultPreReleaseIdentifiers>alpha</MinVerDefaultPreReleaseIdentifiers>
 		<MinVerIgnoreHeight>false</MinVerIgnoreHeight>
