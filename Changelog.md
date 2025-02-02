@@ -1,10 +1,13 @@
 # Changelog
 
-## 8.0.0
+## 9.0.0 (2024-12-06)
+- Added target framework: net9.0
+
+## 8.0.0 (2023-11-17)
 - Added target framework: net8.0
 - Added GitHub actions: dotnet pack and publish to nuget
 
-## 7.0.11
+## 7.0.11 (2023-09-15)
 - Add target framework: net7.0
 - GitHub actions: dotnet tests
 
