@@ -16,8 +16,8 @@
 	</PropertyGroup>
 	<Target Name="CustomFileVersion" AfterTargets="MinVer">
 		<PropertyGroup>
-			<FileVersion>$(MinVerMajor).$(MinVerMinor).$(MinVerPatch).$([System.DateTime]::Now.AddYears(-2021).ToString("Mddy"))</FileVersion>
-	    </PropertyGroup>
+			<FileVersion Condition="'$(MinVerMajor).$(MinVerMinor)' == '$(MinVerMinimumMajorMinor)' ">$(MinVerMajor).$(MinVerMinor).$(MinVerPatch).$([System.DateTime]::Now.AddYears(-2021).ToString("yMMdd"))</FileVersion>
+		</PropertyGroup>
 	</Target>
 
 	<PropertyGroup>
