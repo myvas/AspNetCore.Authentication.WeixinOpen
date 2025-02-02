@@ -29,7 +29,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeixinOpen.UnitTest_7.0.x",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeixinOpen.UnitTest_6.0.x", "test\WeixinOpen.UnitTest_6.0.x\WeixinOpen.UnitTest_6.0.x.csproj", "{3D9EBD25-89A7-4F7C-AACA-D3992273ED25}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeixinAuth.UnitTest_8.0.x", "..\Myvas.AspNetCore.Authentication.WeixinAuth\test\WeixinAuth.UnitTest_8.0.x\WeixinAuth.UnitTest_8.0.x.csproj", "{0554A95B-6790-4631-B8AB-6A4C201C3BE1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeixinOpen.UnitTest_8.0.x", "test\WeixinOpen.UnitTest_8.0.x\WeixinOpen.UnitTest_8.0.x.csproj", "{EABD98B8-BCE8-4DF2-9A91-6AD37450AF83}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,10 +53,10 @@ Global
 		{3D9EBD25-89A7-4F7C-AACA-D3992273ED25}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3D9EBD25-89A7-4F7C-AACA-D3992273ED25}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3D9EBD25-89A7-4F7C-AACA-D3992273ED25}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0554A95B-6790-4631-B8AB-6A4C201C3BE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0554A95B-6790-4631-B8AB-6A4C201C3BE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0554A95B-6790-4631-B8AB-6A4C201C3BE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0554A95B-6790-4631-B8AB-6A4C201C3BE1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EABD98B8-BCE8-4DF2-9A91-6AD37450AF83}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EABD98B8-BCE8-4DF2-9A91-6AD37450AF83}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EABD98B8-BCE8-4DF2-9A91-6AD37450AF83}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EABD98B8-BCE8-4DF2-9A91-6AD37450AF83}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -66,7 +66,7 @@ Global
 		{D6B0F3B3-B2B7-4251-BEA2-A474787D8805} = {73FCFCF4-3A1C-4D4D-939A-9CABDC2341DC}
 		{23FC5A5D-AEAC-40A0-AE5E-395DBDBE736B} = {73FCFCF4-3A1C-4D4D-939A-9CABDC2341DC}
 		{3D9EBD25-89A7-4F7C-AACA-D3992273ED25} = {73FCFCF4-3A1C-4D4D-939A-9CABDC2341DC}
-		{0554A95B-6790-4631-B8AB-6A4C201C3BE1} = {73FCFCF4-3A1C-4D4D-939A-9CABDC2341DC}
+		{EABD98B8-BCE8-4DF2-9A91-6AD37450AF83} = {73FCFCF4-3A1C-4D4D-939A-9CABDC2341DC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2AEDFD1F-BBE1-4727-9978-2FB04DCE84AF}
