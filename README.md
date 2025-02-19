@@ -58,10 +58,16 @@ services.AddAuthentication()
 (3)若同时运营了多个微信公众号，可以在微信开放平台上开通开发者账号，并在“管理中心/公众账号”中将这些公众号添加进去，就可以获取到同一用户在这些公众号中保持一致的UnionId。
 ```
 
-# Dev
+# For Developers
 * [Visual Studio 2022](https://visualstudio.microsoft.com)
-* [.NET 8.0, 7.0, 6.0, 5.0, 3.1](https://dotnet.microsoft.com/en-us/download/dotnet)
+* [.NET Core 3.1](https://dotnet.microsoft.com/download/dotnet-core/3.1)
+* [.NET 5.0](https://dotnet.microsoft.com/download/dotnet-core/5.0)
+* [.NET 6.0](https://dotnet.microsoft.com/download/dotnet-core/6.0)
+* [.NET 7.0](https://dotnet.microsoft.com/download/dotnet-core/7.0)
+* [.NET 8.0](https://dotnet.microsoft.com/download/dotnet-core/8.0)
+* [.NET 9.0](https://dotnet.microsoft.com/download/dotnet-core/9.0)
 * [微信开发者工具](https://mp.weixin.qq.com/debug/wxadoc/dev/devtools/download.html)
+* [微信开放平台](https://open.weixin.qq.com)
 
 # Demo
 * [Here](https://demo.auth.myvas.com)

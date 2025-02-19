@@ -7,24 +7,21 @@ on:
   workflow_call:
     inputs:
       dotnet-version:
-        description: "required dotnet version. The default is '8.0.x'."
+        description: "required dotnet version. For example: '8.0.x'."
         required: true
         type: string
-        default: '8.0.x'
       dotnet-framework:
-        description: "target framework for dotnet test. The default is 'net8.0'."
+        description: "target framework for dotnet test. For example: 'net8.0'."
         required: true
         type: string
-        default: 'net8.0'
       configuration:
-        description: "The configuration to use for building the package. The default is 'Release'."
+        description: "The configuration to use for building the package. For example: 'Release'."
         required: true
         type: string
-        default: 'Release'
                   
 jobs:
   build-and-test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     env:
       NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages
     steps:
@@ -41,6 +38,7 @@ jobs:
       - name: List files in the repository
         run: |
           ls -la ${{ github.workspace }}
+          sudo cat ./.github/workflows/build-and-test.yml
     
       - name: Setup dotnet
         uses: actions/setup-dotnet@v4
@@ -48,9 +46,26 @@ jobs:
           dotnet-version: ${{ inputs.dotnet-version }}
           global-json-file: global.json
           cache: false
+      
+      - name: Set env.DOTNET_VERSION_MAJOR_MINOR
+        run: |
+          DOTNET_VERSION=$(dotnet --version)
+          echo "DOTNET_VERSION=$DOTNET_VERSION" >> $GITHUB_ENV
+          DOTNET_VERSION_MAJOR=$(echo $DOTNET_VERSION | cut -d '.' -f 1)
+          DOTNET_VERSION_MINOR=$(echo $DOTNET_VERSION | cut -d '.' -f 2)
+          echo "DOTNET_VERSION_MAJOR=$DOTNET_VERSION_MAJOR" >> $GITHUB_ENV
+          echo "DOTNET_VERSION_MINOR=$DOTNET_VERSION_MINOR" >> $GITHUB_ENV
+          echo "DOTNET_VERSION_MAJOR_MINOR=$DOTNET_VERSION_MAJOR.$DOTNET_VERSION_MINOR" >> $GITHUB_ENV
+
       - name: Display dotnet version
-        run: dotnet --version
+        run: echo "dotnet ${{ DOTNET_VERSION_MAJOR_MINOR }} SDK installed, and the version is ${{ env.DOTNET_VERSION }}."
     
+      - name: Fixing error 'No usable version of libssl was found' for dotnet 3.1.x
+        if: ${{ env.DOTNET_VERSION_MAJOR_MINOR == '3.1' }}
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libssl-dev libssl1.1
+
       - name: Install dependencies
         run: dotnet restore
       - name: Build
