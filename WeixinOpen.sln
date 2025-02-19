@@ -23,6 +23,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeixinOpen", "src\WeixinOpe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeixinOpen.UnitTest", "test\WeixinOpen.UnitTest\WeixinOpen.UnitTest.csproj", "{D6B0F3B3-B2B7-4251-BEA2-A474787D8805}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\build-and-test.yml = .github\workflows\build-and-test.yml
+		.github\dependabot.yml = .github\dependabot.yml
+		.github\workflows\pack-and-publish.yml = .github\workflows\pack-and-publish.yml
+		.github\workflows\publish.yml = .github\workflows\publish.yml
+		.github\workflows\test.yml = .github\workflows\test.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,6 +53,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{C68C8D63-7FBA-4BE2-B929-C2B00A59C5A6} = {672FEA18-F072-4549-9C4C-DBD1F9CDC7BB}
 		{D6B0F3B3-B2B7-4251-BEA2-A474787D8805} = {73FCFCF4-3A1C-4D4D-939A-9CABDC2341DC}
+		{02EA681E-C7D8-13C7-8484-4AC65E1B71E8} = {E9754587-13F5-4E3A-9F3F-71C98EF97990}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2AEDFD1F-BBE1-4727-9978-2FB04DCE84AF}
