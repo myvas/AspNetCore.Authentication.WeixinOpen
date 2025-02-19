@@ -46,7 +46,7 @@ jobs:
           echo "DOTNET_VERSION_MAJOR_MINOR=$DOTNET_VERSION_MAJOR.$DOTNET_VERSION_MINOR" >> $GITHUB_ENV
 
       - name: Display dotnet version
-        run: echo "dotnet ${{ DOTNET_VERSION_MAJOR_MINOR }} SDK installed, and the version is ${{ env.DOTNET_VERSION }}."
+        run: echo "dotnet ${{ env.DOTNET_VERSION_MAJOR_MINOR }} SDK installed, and the version is ${{ env.DOTNET_VERSION }}."
     
       - name: Fixing error 'No usable version of libssl was found' for dotnet 3.1.x
         if: ${{ env.DOTNET_VERSION_MAJOR_MINOR == '3.1' }}
