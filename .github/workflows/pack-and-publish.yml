@@ -65,7 +65,7 @@ jobs:
         run: dotnet nuget push "**/bin/Release/*.nupkg" -k $NUGET_AUTH_TOKEN -s https://api.nuget.org/v3/index.json --skip-duplicate
         env:
           NUGET_AUTH_TOKEN: ${{ secrets.NUGET_TOKEN }}
-          # You should create this repository secret on https://github.com/myvas/AspNetCore.Email/settings/secrets/actions
+          # You should create this repository secret on https://github.com/(your-repository)/settings/secrets/actions
 
       - run: echo "This job's status is ${{ job.status }}."
       
