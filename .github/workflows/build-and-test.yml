@@ -7,15 +7,15 @@ on:
   workflow_call:
     inputs:
       dotnet-version:
-        description: "required dotnet version. For example: '8.0.x'."
+        description: "The dotnet SDK version, such as '9.0.x', '8.0.x', '7.0.x', '6.0.x', '5.0.x', and '3.1.x'."
         required: true
         type: string
       dotnet-framework:
-        description: "target framework for dotnet test. For example: 'net8.0'."
+        description: "The framework argument using in 'dotnet test', such as 'net9.0', 'net8.0', 'net7.0', 'net6.0', 'net5.0', and 'netcoreapp3.1'."
         required: true
         type: string
       configuration:
-        description: "The configuration to use for building the package. For example: 'Release'."
+        description: "The configuration value for running dotnet CLI, such as 'Release', and 'Debug'."
         required: true
         type: string
                   
