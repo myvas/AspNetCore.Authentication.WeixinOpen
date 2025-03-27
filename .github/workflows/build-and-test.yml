@@ -2,7 +2,8 @@
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
 
 name: build-and-test (reusable workflow)
-
+permissions:
+  contents: read
 on:
   workflow_call:
     inputs:
@@ -49,7 +50,7 @@ jobs:
       
       - name: Set env.DOTNET_VERSION_MAJOR_MINOR
         run: |
-          DOTNET_VERSION=$(dotnet --version)
+          DOTNET_VERSION=${{ inputs.dotnet-version }}
           echo "DOTNET_VERSION=$DOTNET_VERSION" >> $GITHUB_ENV
           DOTNET_VERSION_MAJOR=$(echo $DOTNET_VERSION | cut -d '.' -f 1)
           DOTNET_VERSION_MINOR=$(echo $DOTNET_VERSION | cut -d '.' -f 2)
