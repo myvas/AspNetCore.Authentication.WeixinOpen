@@ -1,0 +1,14 @@
+{
+    "openid": "OPENID",
+    "nickname": "NICKNAME",
+    "sex": 1,
+    "province": "PROVINCE",
+    "city": "CITY",
+    "country": "COUNTRY",
+    "headimgurl": "http://wx.qlogo.cn/mmopen/IMGID/0",
+    "privilege": [
+        "PRIVILEGE1",
+        "PRIVILEGE2"
+    ],
+    "unionid": "UNIONID"
+}

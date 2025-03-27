@@ -1,0 +1,7 @@
+{
+    "access_token": "NEW_ACCESS_TOKEN",
+    "expires_in": 3600,
+    "refresh_token": "ACCESS_TOKEN",
+    "openid": "OPENID",
+    "scope": "SCOPE"
+}

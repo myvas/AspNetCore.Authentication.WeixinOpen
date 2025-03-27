@@ -46,9 +46,15 @@
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="3.1.32" />
+		<PackageReference Include="System.Text.Json" Version="6.0.11" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+	<ItemGroup Condition="$(TargetFramework.StartsWith('net'))">
+		<InternalsVisibleTo Include="WeixinOpen.UnitTest" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+			<_Parameter1>WeixinOpen.UnitTest</_Parameter1>
+		</AssemblyAttribute>
 	</ItemGroup>
 </Project>

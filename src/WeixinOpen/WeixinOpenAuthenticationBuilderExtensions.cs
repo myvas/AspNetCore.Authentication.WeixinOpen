@@ -13,13 +13,10 @@ namespace Microsoft.Extensions.DependencyInjection
     /// </summary>
     public static class WeixinOpenAuthenticationBuilderExtensions
     {
-        public static AuthenticationBuilder AddWeixinOpen(this AuthenticationBuilder builder)
-            => builder.AddWeixinOpen(WeixinOpenDefaults.AuthenticationScheme, _ => { });
-
-        public static AuthenticationBuilder AddWeixinOpen(this AuthenticationBuilder builder, Action<WeixinOpenOptions> setupAction)
+        public static AuthenticationBuilder AddWeixinOpen(this AuthenticationBuilder builder, Action<WeixinOpenOptions> setupAction = null)
             => builder.AddWeixinOpen(WeixinOpenDefaults.AuthenticationScheme, setupAction);
 
-        public static AuthenticationBuilder AddWeixinOpen(this AuthenticationBuilder builder, string authenticationScheme, Action<WeixinOpenOptions> setupAction)
+        public static AuthenticationBuilder AddWeixinOpen(this AuthenticationBuilder builder, string authenticationScheme, Action<WeixinOpenOptions> setupAction = null)
             => builder.AddWeixinOpen(authenticationScheme, WeixinOpenDefaults.DisplayName, setupAction);
 
         public static AuthenticationBuilder AddWeixinOpen(
@@ -32,9 +29,13 @@ namespace Microsoft.Extensions.DependencyInjection
             {
                 throw new ArgumentNullException(nameof(builder));
             }
+            if (setupAction != null)
+            {
+                builder.Services.Configure(setupAction);
+            }
 
-            builder.Services.TryAddTransient<IWeixinOpenApi, WeixinOpenApi>();
             builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IPostConfigureOptions<WeixinOpenOptions>, WeixinOpenPostConfigureOptions>());
+            builder.Services.TryAddTransient<IWeixinOpenApi, WeixinOpenApi>();
             //return builder.AddOAuth<WeixinOpenOptions, WeixinOpenHandler>(authenticationScheme, displayName, setupAction);
             return builder.AddRemoteScheme<WeixinOpenOptions, WeixinOpenHandler>(authenticationScheme, displayName, setupAction);
         }

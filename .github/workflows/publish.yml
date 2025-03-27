@@ -2,7 +2,8 @@
 # For more information see: https://docs.github.com/en/actions/use-cases-and-examples/publishing-packages/about-packaging-with-github-actions
 
 name: publish
-
+permissions:
+  contents: read
 on:
   workflow_dispatch:
   release:

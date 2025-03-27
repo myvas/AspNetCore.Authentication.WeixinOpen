@@ -5,15 +5,8 @@
 
 version: 2
 updates:
-  - package-ecosystem: "github-actions"
-    # Look for workflow files stored in the default location of `/.github/workflows`
-    directory: "/"
-    schedule:
-      interval: "weekly"
-      
   - package-ecosystem: "nuget"
     directories:
-      - "/src/*"
       - "/test/*"
     schedule:
       interval: "weekly"
