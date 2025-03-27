@@ -17,7 +17,9 @@ namespace Myvas.AspNetCore.Authentication
 
         public void PostConfigure(string name, WeixinOpenOptions options)
         {
-            options.DataProtectionProvider = options.DataProtectionProvider ?? _dp;
+            options.Validate();
+
+            options.DataProtectionProvider ??= _dp;
             if (options.Backchannel == null)
             {
                 options.Backchannel = new HttpClient(options.BackchannelHttpHandler ?? new HttpClientHandler());
