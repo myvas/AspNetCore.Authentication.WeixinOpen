@@ -21,6 +21,7 @@
 	</Target>
 
 	<PropertyGroup>
+		<NoWarn>$(NoWarn);NETSDK1188</NoWarn>
 		<RepoRoot>$(MSBuildThisFileDirectory)</RepoRoot>
 		<!--<OutputPath>$(RepoRoot)artifacts\$(Configuration)\$(ProjectName)\</OutputPath>-->
 	</PropertyGroup>

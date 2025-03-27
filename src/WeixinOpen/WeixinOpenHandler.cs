@@ -473,7 +473,7 @@ namespace Myvas.AspNetCore.Authentication
             var unionid = tokens.GetUnionId();
             var scope = tokens.GetScope();
 
-            var userInfoPayload = await _api.GetUserInfo(Options.Backchannel, Options.UserInformationEndpoint, tokens.AccessToken, openid, Context.RequestAborted, WeixinOpenLanguageCodes.zh_CN);
+            var userInfoPayload = await _api.GetUserInfo(Options.Backchannel, Options.UserInformationEndpoint, tokens.AccessToken, openid, WeixinOpenLanguageCodes.zh_CN, Context.RequestAborted);
 
             var renewUserInfoPayloadDoc = userInfoPayload.AppendElement("scope", scope);
 

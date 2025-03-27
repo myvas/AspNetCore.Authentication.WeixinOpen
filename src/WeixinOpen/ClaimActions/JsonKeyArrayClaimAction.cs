@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.OAuth.Claims;
 using System.Text.Json;
 using System.Security.Claims;
-using Newtonsoft.Json.Linq;
 
 namespace Myvas.AspNetCore.Authentication.WeixinOpen.Internal
 {
