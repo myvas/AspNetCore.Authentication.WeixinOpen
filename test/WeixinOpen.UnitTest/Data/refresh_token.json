@@ -1,7 +1,7 @@
 {
-    "access_token": "NEW_ACCESS_TOKEN",
+    "access_token": "ACCESS_TOKEN",
     "expires_in": 3600,
-    "refresh_token": "ACCESS_TOKEN",
+    "refresh_token": "REFRESH_TOKEN",
     "openid": "OPENID",
     "scope": "SCOPE"
 }

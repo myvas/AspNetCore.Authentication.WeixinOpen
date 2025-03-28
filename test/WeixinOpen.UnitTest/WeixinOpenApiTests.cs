@@ -75,14 +75,15 @@ public class WeixinOpenApiTests
         Assert.Null(result.Error);
         Assert.NotNull(result.Response);
         Assert.Equal("ACCESS_TOKEN", result.AccessToken);
+        Assert.Equal("REFRESH_TOKEN", result.RefreshToken);
 
-        var accessToken = result.AccessToken;
+        var refreshToken = result.RefreshToken;
         endpoint = WeixinOpenDefaults.RefreshTokenEndpoint;
-        var result2 = await api.RefreshToken(backchannel, endpoint, appId, accessToken, cancellationToken);
+        var result2 = await api.RefreshToken(backchannel, endpoint, appId, refreshToken, cancellationToken);
         Assert.Null(result2.Error);
         Assert.NotNull(result2.Response);
-        Assert.Equal("NEW_ACCESS_TOKEN", result2.AccessToken);
-        Assert.Equal("ACCESS_TOKEN", result2.RefreshToken);
+        Assert.Equal("ACCESS_TOKEN", result2.AccessToken);
+        Assert.Equal("REFRESH_TOKEN", result2.RefreshToken);
         Assert.Equal("Bearer", result2.TokenType ?? "Bearer");
         Assert.Equal("OPENID", result2.GetOpenId());
         Assert.Equal("SCOPE", result2.GetScope());

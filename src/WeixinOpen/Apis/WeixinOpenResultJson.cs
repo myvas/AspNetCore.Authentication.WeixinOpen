@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Connections.Features;
 
 public class WeixinOpenResultJson
 {
