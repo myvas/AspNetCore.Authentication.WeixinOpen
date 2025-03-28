@@ -1,76 +1,82 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OAuth;
-using System;
 using System.Security.Claims;
 
-namespace Myvas.AspNetCore.Authentication
+namespace Myvas.AspNetCore.Authentication;
+
+/// <summary>
+/// Configuration options for <see cref="WeixinOpenHandler"/>.
+/// </summary>
+public class WeixinOpenOptions : OAuthOptions
 {
     /// <summary>
-    /// Configuration options for <see cref="WeixinOpenHandler"/>.
+    /// Gets or sets the provider-assigned client id.
     /// </summary>
-    public class WeixinOpenOptions : OAuthOptions
+    public string AppId { get => ClientId; set => ClientId = value; }
+
+    /// <summary>
+    /// Gets or sets the provider-assigned client secret.
+    /// </summary>
+    public string AppSecret { get => ClientSecret; set => ClientSecret = value; }
+
+    /// <summary>
+    /// 国家地区语言版本，支持zh_CN 简体（默认），zh_TW 繁体，en 英语等三种。
+    /// </summary>
+    /// <remarks>在拉取用户信息时用到</remarks>
+    public string LanguageCode { get; set; }
+
+    public string RefreshTokenEndpoint { get; set; }
+    public string ValidateTokenEndpoint { get; set; }
+
+    public WeixinOpenOptions()
     {
-        /// <summary>
-        /// Gets or sets the provider-assigned client id.
-        /// </summary>
-        public string AppId { get => ClientId; set => ClientId = value; }
+        CallbackPath = WeixinOpenDefaults.CallbackPath;
+        AuthorizationEndpoint = WeixinOpenDefaults.AuthorizationEndpoint;
+        TokenEndpoint = WeixinOpenDefaults.TokenEndpoint;
+        RefreshTokenEndpoint = WeixinOpenDefaults.RefreshTokenEndpoint;
+        ValidateTokenEndpoint = WeixinOpenDefaults.ValidateTokenEndpoint;
+        UserInformationEndpoint = WeixinOpenDefaults.UserInformationEndpoint;
+        LanguageCode = "zh_CN";
+        Scope.Add(WeixinOpenScopes.snsapi_login);
+        SaveTokens = true;
 
-        /// <summary>
-        /// Gets or sets the provider-assigned client secret.
-        /// </summary>
-        public string AppSecret { get => ClientSecret; set => ClientSecret = value; }
+        ClaimsIssuer = WeixinOpenDefaults.ClaimsIssuer;
 
-        /// <summary>
-        /// 国家地区语言版本，支持zh_CN 简体（默认），zh_TW 繁体，en 英语等三种。
-        /// </summary>
-        /// <remarks>在拉取用户信息时用到</remarks>
-        public string LanguageCode { get; set; }
+        ClaimActions.MapJsonKey(ClaimTypes.NameIdentifier, "openid");
+        ClaimActions.MapJsonKey(ClaimTypes.Name, "nickname");
 
-        public string RefreshTokenEndpoint { get; set; }
-        public string ValidateTokenEndpoint { get; set; }
-
-        public WeixinOpenOptions()
+        ClaimActions.MapJsonKey(WeixinOpenClaimTypes.UnionId, "unionid");
+        ClaimActions.MapJsonKey(WeixinOpenClaimTypes.OpenId, "openid");
+        ClaimActions.MapJsonKey(WeixinOpenClaimTypes.NickName, "nickname");
+        ClaimActions.MapJsonKey(WeixinOpenClaimTypes.Sex, "sex");
+        ClaimActions.MapJsonKey(WeixinOpenClaimTypes.Province, "province");
+        ClaimActions.MapJsonKey(WeixinOpenClaimTypes.City, "city");
+        ClaimActions.MapJsonKey(WeixinOpenClaimTypes.Country, "country");
+        ClaimActions.MapJsonKey(WeixinOpenClaimTypes.HeadImageUrl, "headimgurl");
+        // Map the privilege array two Claims, NOT that one Claims with a colon separated string.
+        /*
+        "privilege": [
+            "PRIVILEGE1",
+            "PRIVILEGE2"
+        ],
+        */
+        ClaimActions.MapJsonKey(WeixinOpenClaimTypes.Privilege, "privilege");
+        //ClaimActions.MapJsonKeyArray(WeixinOpenClaimTypes.Privilege, "privilege");
+        ClaimActions.MapJsonKey(WeixinOpenClaimTypes.Scope, "scope");
+    }
+    
+    public override void Validate()
+    {
+        if (string.IsNullOrEmpty(LanguageCode))
         {
-            CallbackPath = WeixinOpenDefaults.CallbackPath;
-            AuthorizationEndpoint = WeixinOpenDefaults.AuthorizationEndpoint;
-            TokenEndpoint = WeixinOpenDefaults.TokenEndpoint;
-            RefreshTokenEndpoint = WeixinOpenDefaults.RefreshTokenEndpoint;
-            ValidateTokenEndpoint = WeixinOpenDefaults.ValidateTokenEndpoint;
-            UserInformationEndpoint = WeixinOpenDefaults.UserInformationEndpoint;
-            LanguageCode = "zh_CN";
-            Scope.Add(WeixinOpenScopes.snsapi_login);
-            SaveTokens = true;
-
-            ClaimsIssuer = WeixinOpenDefaults.ClaimsIssuer;
-
-            ClaimActions.MapJsonKey(ClaimTypes.NameIdentifier, "openid");
-            ClaimActions.MapJsonKey(ClaimTypes.Name, "nickname");
-
-            ClaimActions.MapJsonKey(WeixinOpenClaimTypes.UnionId, "unionid");
-            ClaimActions.MapJsonKey(WeixinOpenClaimTypes.OpenId, "openid");
-            ClaimActions.MapJsonKey(WeixinOpenClaimTypes.NickName, "nickname");
-            ClaimActions.MapJsonKey(WeixinOpenClaimTypes.Sex, "sex");
-            ClaimActions.MapJsonKey(WeixinOpenClaimTypes.Province, "province");
-            ClaimActions.MapJsonKey(WeixinOpenClaimTypes.Country, "country");
-            ClaimActions.MapJsonKey(WeixinOpenClaimTypes.HeadImageUrl, "headimgurl");
-            ClaimActions.MapJsonKey(WeixinOpenClaimTypes.Privilege, "privilege");
-            //ClaimActions.MapJsonKeyArray(WeixinOpenClaimTypes.Privilege, "privilege");
-            ClaimActions.MapJsonKey(WeixinOpenClaimTypes.Scope, "scope");
+            throw new ArgumentException($"{nameof(LanguageCode)} must be provided", nameof(LanguageCode));
         }
-        
-        public override void Validate()
+
+        if (string.IsNullOrEmpty(TokenEndpoint))
         {
-            if (string.IsNullOrEmpty(LanguageCode))
-            {
-                throw new ArgumentException($"{nameof(LanguageCode)} must be provided", nameof(LanguageCode));
-            }
-
-            if (string.IsNullOrEmpty(TokenEndpoint))
-            {
-                throw new ArgumentException($"{nameof(RefreshTokenEndpoint)} must be provided", nameof(RefreshTokenEndpoint));
-            }
-
-            base.Validate();
+            throw new ArgumentException($"{nameof(RefreshTokenEndpoint)} must be provided", nameof(RefreshTokenEndpoint));
         }
+
+        base.Validate();
     }
 }

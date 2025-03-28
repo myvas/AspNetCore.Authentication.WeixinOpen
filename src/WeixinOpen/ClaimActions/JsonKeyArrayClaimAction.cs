@@ -2,80 +2,79 @@
 using System.Text.Json;
 using System.Security.Claims;
 
-namespace Myvas.AspNetCore.Authentication.WeixinOpen.Internal
+namespace Myvas.AspNetCore.Authentication.WeixinOpen.Internal;
+
+internal class JsonKeyArrayClaimAction : ClaimAction
 {
-    internal class JsonKeyArrayClaimAction : ClaimAction
+    public JsonKeyArrayClaimAction(string claimType, string valueType)
+        : base(claimType, valueType)
     {
-        public JsonKeyArrayClaimAction(string claimType, string valueType)
-            : base(claimType, valueType)
-        {
-            JsonKey = claimType.ToLower();
-        }
+        JsonKey = claimType.ToLower();
+    }
 
-        /// <summary>
-        /// Creates a new JsonKeyArrayClaimAction.
-        /// </summary>
-        /// <param name="claimType">The value to use for Claim.Type when creating a Claim.</param>
-        /// <param name="valueType">The value to use for Claim.ValueType when creating a Claim.</param>
-        /// <param name="jsonKey">The top level key to look for in the json user data.</param>
-        public JsonKeyArrayClaimAction(string claimType, string valueType, string jsonKey) : base(claimType, valueType)
-        {
-            JsonKey = jsonKey;
-        }
+    /// <summary>
+    /// Creates a new JsonKeyArrayClaimAction.
+    /// </summary>
+    /// <param name="claimType">The value to use for Claim.Type when creating a Claim.</param>
+    /// <param name="valueType">The value to use for Claim.ValueType when creating a Claim.</param>
+    /// <param name="jsonKey">The top level key to look for in the json user data.</param>
+    public JsonKeyArrayClaimAction(string claimType, string valueType, string jsonKey) : base(claimType, valueType)
+    {
+        JsonKey = jsonKey;
+    }
 
-        /// <summary>
-        /// The top level key to look for in the json user data.
-        /// </summary>
-        public string JsonKey { get; }
+    /// <summary>
+    /// The top level key to look for in the json user data.
+    /// </summary>
+    public string JsonKey { get; }
 
 #if NET6_0_OR_GREATER
-        public override void Run(JsonElement userData, ClaimsIdentity identity, string issuer)
+    public override void Run(JsonElement userData, ClaimsIdentity identity, string issuer)
+    {
+        var isArray = userData.GetArrayLength() > 0;
+        if (isArray)
         {
-            var isArray = userData.GetArrayLength() > 0;
-            if (isArray)
-            {
-                var arr = userData.GetStringArray(JsonKey);
-                foreach (var value in arr)
-                    identity.AddClaim(new Claim(ClaimType, value.ToString(), ValueType, issuer));
-            }
-            else
-            {
-                var s = userData.GetString(JsonKey);
-                identity.AddClaim(new Claim(ClaimType, s, ValueType, issuer));
-            }
+            var arr = userData.GetStringArray(JsonKey);
+            foreach (var value in arr)
+                identity.AddClaim(new Claim(ClaimType, value.ToString(), ValueType, issuer));
         }
-#elif NET5_0
-        public override void Run(JsonElement userData, ClaimsIdentity identity, string issuer)
+        else
         {
-            var isArray = userData.GetArrayLength() > 0;
-            if (isArray)
-            {
-                var arr = userData.GetStringArray(JsonKey);
-                foreach (var value in arr)
-                    identity.AddClaim(new Claim(ClaimType, value.ToString(), ValueType, issuer));
-            }
-            else
-            {
-                var s = userData.GetString(JsonKey);
-                identity.AddClaim(new Claim(ClaimType, s, ValueType, issuer));
-            }
+            var s = userData.GetString(JsonKey);
+            identity.AddClaim(new Claim(ClaimType, s, ValueType, issuer));
         }
-#elif NETCOREAPP3_1
-        public override void Run(JsonElement userData, ClaimsIdentity identity, string issuer)
-        {
-            var isArray = userData.GetArrayLength() > 0;
-            if (isArray)
-            {
-                var arr = userData.GetStringArray(JsonKey);
-                foreach (var value in arr)
-                    identity.AddClaim(new Claim(ClaimType, value.ToString(), ValueType, issuer));
-            }
-            else
-            {
-                var s = userData.GetString(JsonKey);
-                identity.AddClaim(new Claim(ClaimType, s, ValueType, issuer));
-            }
-        }
-#endif
     }
+#elif NET5_0
+    public override void Run(JsonElement userData, ClaimsIdentity identity, string issuer)
+    {
+        var isArray = userData.GetArrayLength() > 0;
+        if (isArray)
+        {
+            var arr = userData.GetStringArray(JsonKey);
+            foreach (var value in arr)
+                identity.AddClaim(new Claim(ClaimType, value.ToString(), ValueType, issuer));
+        }
+        else
+        {
+            var s = userData.GetString(JsonKey);
+            identity.AddClaim(new Claim(ClaimType, s, ValueType, issuer));
+        }
+    }
+#elif NETCOREAPP3_1
+    public override void Run(JsonElement userData, ClaimsIdentity identity, string issuer)
+    {
+        var isArray = userData.GetArrayLength() > 0;
+        if (isArray)
+        {
+            var arr = userData.GetStringArray(JsonKey);
+            foreach (var value in arr)
+                identity.AddClaim(new Claim(ClaimType, value.ToString(), ValueType, issuer));
+        }
+        else
+        {
+            var s = userData.GetString(JsonKey);
+            identity.AddClaim(new Claim(ClaimType, s, ValueType, issuer));
+        }
+    }
+#endif
 }
