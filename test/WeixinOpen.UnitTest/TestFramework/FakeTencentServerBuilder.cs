@@ -63,7 +63,7 @@ public static class FakeTencentServerBuilder
                             await context.Response.WriteAsync(content);
                             return true;                            
                         }
-                        if (refresh_token != "ACCESS_TOKEN")
+                        if (refresh_token != "REFRESH_TOKEN")
                         {
                             context.Response.Headers.TryAdd(HeaderNames.ContentType, "application/json");
                             var content = TestFile.ReadAllText("invalid-refresh_token.json");

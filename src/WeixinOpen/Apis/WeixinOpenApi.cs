@@ -79,7 +79,8 @@ internal class WeixinOpenApi : IWeixinOpenApi
     /// </summary>
     /// <param name="refreshToken">refresh_token拥有较长的有效期（30天），当refresh_token失效的后，需要用户重新授权，所以，请开发者在refresh_token即将过期时（如第29天时），进行定时的自动刷新并保存好它。</param>
     /// <returns></returns>
-    public async Task<OAuthTokenResponse> RefreshToken(HttpClient backchannel, string refreshTokenEndpoint, string appId, string refreshToken, CancellationToken cancellationToken = default)
+    [Obsolete("Avoid this function—it performs unnecessary deserialization.")]
+    public async Task<OAuthTokenResponse> RefreshToken2(HttpClient backchannel, string refreshTokenEndpoint, string appId, string refreshToken, CancellationToken cancellationToken = default)
     {
         var tokenRequestParameters = new Dictionary<string, string>()
         {
@@ -116,13 +117,13 @@ internal class WeixinOpenApi : IWeixinOpenApi
         //if (!string.IsNullOrEmpty(payload.RootElement.GetString("errcode")))
         if (!responseJson.Succeeded)
         {
-            var error = "OAuth refresh token endpoint failure: " + await Display(response);
+            var error = "OAuth refresh token failed: " + await Display(response);
             _logger?.LogError(error);
             return OAuthTokenResponse.Failed(new Exception(error));
         }
         if (!responseJson.Validate())
         {
-            var error = "OAuth refresh token endpoint failure: Invalid response.";
+            var error = "OAuth refresh token failed: Invalid response";
             _logger?.LogError(error);
             return OAuthTokenResponse.Failed(new Exception(error));
         }
@@ -141,8 +142,51 @@ internal class WeixinOpenApi : IWeixinOpenApi
         var jsonString = JsonSerializer.Serialize(resultDto);
         var resultJdoc = JsonDocument.Parse(jsonString);
 #endif
-
         return OAuthTokenResponse.Success(resultJdoc);
+    }
+
+    public async Task<OAuthTokenResponse> RefreshToken(HttpClient backchannel, string refreshTokenEndpoint, string appId, string refreshToken, CancellationToken cancellationToken = default)
+    {
+        var tokenRequestParameters = new Dictionary<string, string>()
+        {
+            ["appid"] = appId,
+            ["grant_type"] = "refresh_token",
+            ["refresh_token"] = refreshToken
+        };
+
+        var requestUrl = QueryHelpers.AddQueryString(refreshTokenEndpoint, tokenRequestParameters);
+
+        var response = await backchannel.GetAsync(requestUrl, cancellationToken);
+        if (!response.IsSuccessStatusCode)
+        {
+            var error = "OAuth refresh token failed: " + await Display(response);
+            _logger?.LogError(error);
+            return OAuthTokenResponse.Failed(new Exception(error));
+        }
+
+        //var content = await response.Content.ReadAsStringAsync();
+        //{
+        //    "access_token":"ACCESS_TOKEN",
+        //    "expires_in":7200,
+        //    "refresh_token":"REFRESH_TOKEN",
+        //    "openid":"OPENID",
+        //    "scope":"SCOPE"
+        //}
+        var content = await response.Content.ReadAsStringAsync(cancellationToken);
+        var payload = JsonDocument.Parse(content);
+        if (!string.IsNullOrEmpty(payload.RootElement.GetString("errcode")))
+        {
+            var error = "OAuth refresh token failed: " + await Display(response);
+            _logger?.LogError(error);
+            return OAuthTokenResponse.Failed(new Exception(error));
+        }
+        if (string.IsNullOrEmpty(payload.RootElement.GetString("access_token")))
+        {
+            var error = "OAuth refresh token failed: Response missing required access token";
+            _logger?.LogError(error);
+            return OAuthTokenResponse.Failed(new Exception(error));
+        }
+        return OAuthTokenResponse.Success(payload);
     }
 
     /// <summary>
