@@ -172,7 +172,11 @@ internal class WeixinOpenApi : IWeixinOpenApi
         //    "openid":"OPENID",
         //    "scope":"SCOPE"
         //}
+#if NET5_0_OR_GREATER
         var content = await response.Content.ReadAsStringAsync(cancellationToken);
+#else
+        var content = await response.Content.ReadAsStringAsync();
+#endif
         var payload = JsonDocument.Parse(content);
         if (!string.IsNullOrEmpty(payload.RootElement.GetString("errcode")))
         {
